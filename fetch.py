@@ -101,7 +101,7 @@ def update_history(date, total, collected):
 
     ordered = sorted(rows.items())
     with open(HISTORY_PATH, "w", newline="", encoding="utf-8") as fh:
-        w = csv.writer(fh)
+        w = csv.writer(fh, lineterminator="\n")
         w.writerow(["date", "total", "collected"])
         for d, (t, c) in ordered:
             w.writerow([d, t, c])
