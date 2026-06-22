@@ -1,6 +1,6 @@
 # posokanei-archive
 
-![Products fetched per day](assets/products.svg)
+![Products fetched per day](assets/products.png)
 
 Daily archival snapshots of all products and prices from the Greek price
 observatory **[posokanei.gov.gr](https://posokanei.gov.gr)** (Παρατηρητήριο
@@ -19,7 +19,7 @@ data/
   2026/
     posokanei-2026-06-22.json   # one JSON snapshot per day
 assets/
-  products.svg                  # daily-regenerated chart (shown above)
+  products.png                  # daily-regenerated chart (shown above)
 ```
 
 Snapshots are stored as **plain, pretty-printed JSON** with products sorted by
@@ -55,10 +55,13 @@ print(snap["total"], "products")
 ## Running locally
 
 ```bash
-python fetch.py        # writes today's snapshot under data/
+python fetch.py                       # writes today's snapshot + updates data/history.csv
+pip install -r requirements.txt       # only needed for the chart
+python chart.py                       # regenerates assets/products.png from history.csv
 ```
 
-Standard library only — no dependencies.
+`fetch.py` is standard-library only. `chart.py` needs matplotlib (the sole
+dependency), kept separate so the crawler stays dependency-free.
 
 ## Source
 
