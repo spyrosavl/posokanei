@@ -22,6 +22,7 @@ keeping repository growth small despite the ~20 MB working-tree file.
 Stdlib only (no pip install needed in CI).
 """
 
+import csv
 import datetime as dt
 import json
 import os
@@ -82,6 +83,95 @@ def fetch_all_products():
     return total, products
 
 
+HISTORY_PATH = os.path.join("data", "history.csv")
+CHART_PATH = os.path.join("assets", "products.svg")
+
+
+def update_history(date, total, collected):
+    """Append (or replace) today's row in the append-only history CSV.
+
+    Returns the full, date-sorted list of (date, total, collected) rows.
+    """
+    rows = {}
+    if os.path.exists(HISTORY_PATH):
+        with open(HISTORY_PATH, newline="", encoding="utf-8") as fh:
+            for r in csv.DictReader(fh):
+                rows[r["date"]] = (int(r["total"]), int(r["collected"]))
+    rows[date] = (total, collected)  # idempotent re-runs overwrite the day
+
+    ordered = sorted(rows.items())
+    with open(HISTORY_PATH, "w", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh)
+        w.writerow(["date", "total", "collected"])
+        for d, (t, c) in ordered:
+            w.writerow([d, t, c])
+    return [(d, t, c) for d, (t, c) in ordered]
+
+
+def render_chart(history):
+    """Render data/history.csv as a minimal stdlib SVG line chart of `total`."""
+    W, H = 800, 240
+    pad_l, pad_r, pad_t, pad_b = 50, 20, 20, 30
+    plot_w, plot_h = W - pad_l - pad_r, H - pad_t - pad_b
+
+    dates = [row[0] for row in history]
+    values = [row[1] for row in history]
+    vmin, vmax = min(values), max(values)
+    # Pad the range a touch so the line isn't glued to the top/bottom edge.
+    span = max(vmax - vmin, 1)
+    vlo, vhi = vmin - span * 0.1, vmax + span * 0.1
+
+    n = len(values)
+
+    def x(i):
+        return pad_l + (plot_w if n == 1 else plot_w * i / (n - 1))
+
+    def y(v):
+        return pad_t + plot_h * (1 - (v - vlo) / (vhi - vlo))
+
+    points = " ".join(f"{x(i):.1f},{y(v):.1f}" for i, v in enumerate(values))
+
+    # Y gridlines/labels at min, mid, max.
+    ticks = sorted({vmin, (vmin + vmax) // 2, vmax})
+    grid = []
+    for t in ticks:
+        yy = y(t)
+        grid.append(
+            f'<line x1="{pad_l}" y1="{yy:.1f}" x2="{W - pad_r}" y2="{yy:.1f}" '
+            f'stroke="#e5e7eb" stroke-width="1"/>'
+            f'<text x="{pad_l - 6}" y="{yy + 4:.1f}" text-anchor="end" '
+            f'font-size="11" fill="#6b7280">{t}</text>'
+        )
+
+    # X labels: first and last date only, to avoid crowding.
+    xlabels = (
+        f'<text x="{x(0):.1f}" y="{H - 8}" text-anchor="start" '
+        f'font-size="11" fill="#6b7280">{dates[0]}</text>'
+    )
+    if n > 1:
+        xlabels += (
+            f'<text x="{x(n - 1):.1f}" y="{H - 8}" text-anchor="end" '
+            f'font-size="11" fill="#6b7280">{dates[-1]}</text>'
+        )
+
+    last_x, last_y = x(n - 1), y(values[-1])
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" \
+viewBox="0 0 {W} {H}" font-family="sans-serif">
+  <rect width="{W}" height="{H}" fill="#ffffff"/>
+  <text x="{pad_l}" y="14" font-size="12" fill="#111827" \
+font-weight="bold">Products fetched per day (total: {values[-1]})</text>
+  {''.join(grid)}
+  <polyline fill="none" stroke="#2563eb" stroke-width="2" points="{points}"/>
+  <circle cx="{last_x:.1f}" cy="{last_y:.1f}" r="3" fill="#2563eb"/>
+  {xlabels}
+</svg>
+'''
+    os.makedirs(os.path.dirname(CHART_PATH), exist_ok=True)
+    with open(CHART_PATH, "w", encoding="utf-8") as fh:
+        fh.write(svg)
+    print(f"wrote {CHART_PATH} ({n} points)")
+
+
 def main():
     today = dt.date.today().isoformat()
     fetched_at = dt.datetime.now(dt.timezone.utc).isoformat()
@@ -121,6 +211,9 @@ def main():
     with open(os.path.join("data", "latest.json"), "w", encoding="utf-8") as fh:
         json.dump({"date": today, "path": out_path,
                    "total": total, "collected": len(products)}, fh, indent=2)
+
+    history = update_history(today, total, len(products))
+    render_chart(history)
 
 
 if __name__ == "__main__":

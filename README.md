@@ -1,5 +1,7 @@
 # posokanei-archive
 
+![Products fetched per day](assets/products.svg)
+
 Daily archival snapshots of all products and prices from the Greek price
 observatory **[posokanei.gov.gr](https://posokanei.gov.gr)** (Παρατηρητήριο
 Τιμών), fetched from its public API.
@@ -13,8 +15,11 @@ snapshots forms a historical price record.
 ```
 data/
   latest.json                   # pointer to the newest snapshot
+  history.csv                   # date,total,collected — one row per day
   2026/
     posokanei-2026-06-22.json   # one JSON snapshot per day
+assets/
+  products.svg                  # daily-regenerated chart (shown above)
 ```
 
 Snapshots are stored as **plain, pretty-printed JSON** with products sorted by
