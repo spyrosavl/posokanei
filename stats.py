@@ -50,7 +50,13 @@ def load():
     gr = {i for i, r in rmeta.items() if r["country"] == "GR"}
     eu = {i for i, r in rmeta.items() if r["country"] != "GR"}
     names = {i: r["name"] for i, r in rmeta.items()}
-    return snap, gr, eu, names
+    web = {i: r["website"] for i, r in rmeta.items() if r.get("website")}
+    return snap, gr, eu, names, web
+
+
+def shop(rid, names, web):
+    """Όνομα σούπερ μάρκετ ως σύνδεσμος προς το site του (αν υπάρχει)."""
+    return f"[{names[rid]}]({web[rid]})" if rid in web else names[rid]
 
 
 def gr_prices(p, gr):
@@ -82,7 +88,7 @@ def robust_spread(pr):
     return None
 
 
-def stat_spread(prods, gr, names):
+def stat_spread(prods, gr, names, web):
     rows = []
     for p in prods:
         pr = gr_prices(p, gr)
@@ -90,24 +96,25 @@ def stat_spread(prods, gr, names):
             s = robust_spread(pr)
             if s:
                 rows.append((*s, len(pr), p["name"],
-                             names[min(pr, key=pr.get)], names[max(pr, key=pr.get)]))
+                             min(pr, key=pr.get), max(pr, key=pr.get)))
     rows.sort(reverse=True)
     top = rows[0]
     story = (
         "## 🥇 Το ίδιο προϊόν, εντελώς διαφορετική τιμή\n\n"
         f"Το ίδιο ακριβώς προϊόν μπορεί να κοστίζει **{top[0]/100+1:.1f} φορές** "
         "περισσότερο — ανάλογα με το πού θα ψωνίσεις. Πρωταθλητής σήμερα: "
-        f"**{top[5]}**, που πουλιέται **€{top[2]:.2f}** στο {top[6]} αλλά "
-        f"**€{top[3]:.2f}** στο {top[7]} — διαφορά **+{top[0]:.0f}%** για το πανομοιότυπο "
-        "προϊόν. Πριν το βάλεις στο καλάθι, αξίζει μια ματιά στην ετικέτα:\n")
+        f"**{top[5]}**, που πουλιέται **€{top[2]:.2f}** στο {shop(top[6], names, web)} αλλά "
+        f"**€{top[3]:.2f}** στο {shop(top[7], names, web)} — διαφορά **+{top[0]:.0f}%** για το "
+        "πανομοιότυπο προϊόν. Πριν το βάλεις στο καλάθι, αξίζει μια ματιά στην ετικέτα:\n")
     tbl = ["| Προϊόν | Φθηνότερα | Ακριβότερα | Διαφορά |",
            "|---|---|---|---|"]
     for pct, _a, lo, hi, _n, name, cheap, exp in rows[:10]:
-        tbl.append(f"| {name} | €{lo:.2f} {cheap} | €{hi:.2f} {exp} | **+{pct:.0f}%** |")
+        tbl.append(f"| {name} | €{lo:.2f} {shop(cheap, names, web)} "
+                   f"| €{hi:.2f} {shop(exp, names, web)} | **+{pct:.0f}%** |")
     return story + "\n" + "\n".join(tbl), rows
 
 
-def stat_leaderboard(prods, gr, names):
+def stat_leaderboard(prods, gr, names, web):
     wins = defaultdict(int)
     appears = defaultdict(int)
     prem = defaultdict(list)
@@ -139,7 +146,7 @@ def stat_leaderboard(prods, gr, names):
     for r in order:
         pct = wins[r] / appears[r] * 100
         ap = st.mean(prem[r]) if prem[r] else 0
-        tbl.append(f"| {names[r]} | {pct:.0f}% | +{ap:.0f}% |")
+        tbl.append(f"| {shop(r, names, web)} | {pct:.0f}% | +{ap:.0f}% |")
 
     # Γράφημα: πόσο συχνά είναι το φθηνότερο
     labels = [names[r] for r in order][::-1]
@@ -282,10 +289,25 @@ def stat_greece_vs_europe(prods, gr, eu):
     return story + "\n" + "\n".join(t1) + "\n" + "\n".join(t2)
 
 
+def stat_sources(gr, names, web):
+    story = (
+        "## 🔗 Έλεγξε τις τιμές μόνος σου\n\n"
+        "Τα ονόματα των σούπερ μάρκετ στους πίνακες είναι σύνδεσμοι προς το site της κάθε "
+        "αλυσίδας — άνοιξέ τα και ψάξε το προϊόν με το όνομά του για να επιβεβαιώσεις την "
+        "τιμή. Επίσημη πηγή των δεδομένων είναι το **[Παρατηρητήριο Τιμών — "
+        "posokanei.gov.gr](https://posokanei.gov.gr)**, όπου βλέπεις την τιμή κάθε "
+        "προϊόντος σε όλες τις αλυσίδες μαζί.\n")
+    tbl = ["| Σούπερ μάρκετ | Ιστοσελίδα |", "|---|---|"]
+    for r in sorted(gr, key=lambda r: names[r]):
+        link = f"[{web[r]}]({web[r]})" if r in web else "—"
+        tbl.append(f"| {names[r]} | {link} |")
+    return story + "\n" + "\n".join(tbl)
+
+
 def main():
-    snap, gr, eu, names = load()
+    snap, gr, eu, names, web = load()
     prods = snap["products"]
-    spread_md, _ = stat_spread(prods, gr, names)
+    spread_md, _ = stat_spread(prods, gr, names, web)
     parts = [
         f"# 📊 Τι κρύβουν οι τιμές των σούπερ μάρκετ — {snap['date']}",
         "",
@@ -296,13 +318,14 @@ def main():
         "",
         "_Οι συγκρίσεις μεταξύ σούπερ μάρκετ αφορούν μόνο ελληνικές αλυσίδες και έχουν "
         "καθαριστεί από λάθη του Παρατηρητηρίου (τιμές μονάδας λανθασμένα συνδεδεμένες με "
-        "πολυσυσκευασίες)._",
+        "πολυσυσκευασίες). Τα ονόματα των σούπερ μάρκετ είναι σύνδεσμοι προς το site τους._",
         "",
         spread_md, "",
-        stat_leaderboard(prods, gr, names), "",
+        stat_leaderboard(prods, gr, names, web), "",
         stat_categories(prods, gr), "",
         stat_private_label(prods, gr), "",
         stat_greece_vs_europe(prods, gr, eu), "",
+        stat_sources(gr, names, web), "",
     ]
     with open(OUT, "w", encoding="utf-8") as fh:
         fh.write("\n".join(parts))
