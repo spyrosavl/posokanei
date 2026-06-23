@@ -67,11 +67,14 @@ jobs:
       - name: Render chart
         run: python chart.py
 
+      - name: Compute stats
+        run: python stats.py
+
       - name: Commit snapshot
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data assets
+          git add data assets STATS.md
           if git diff --cached --quiet; then
             echo "No changes to commit."
           else

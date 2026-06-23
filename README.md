@@ -10,6 +10,10 @@ A GitHub Action runs once a day, downloads the full catalogue (~8,600 products
 with per-retailer prices), and commits a snapshot. The growing series of
 snapshots forms a historical price record.
 
+**👉 See [STATS.md](STATS.md) for daily "wow" stats** — biggest price gaps
+between supermarkets, the cheapest-chain leaderboard, own-brand savings, and
+Greece-vs-Europe price comparisons.
+
 ## Layout
 
 ```
@@ -20,6 +24,7 @@ data/
     posokanei-2026-06-22.json   # one JSON snapshot per day
 assets/
   products.png                  # daily-regenerated chart (shown above)
+STATS.md                        # daily-regenerated price stats
 ```
 
 Snapshots are stored as **plain, pretty-printed JSON** with products sorted by
