@@ -66,9 +66,9 @@ python chart.py                       # ξαναφτιάχνει το assets/pro
 python stats.py                       # ξαναφτιάχνει το STATS.md από το νεότερο στιγμιότυπο
 ```
 
-Το `fetch.py` χρησιμοποιεί μόνο τη standard library. Το `chart.py` χρειάζεται το
-matplotlib (η μοναδική εξάρτηση), που κρατιέται ξεχωριστά ώστε ο crawler να μένει
-χωρίς εξαρτήσεις. Το `stats.py` είναι επίσης μόνο standard library.
+Το `fetch.py` χρησιμοποιεί μόνο τη standard library, ώστε ο crawler να μένει
+χωρίς εξαρτήσεις. Τα `chart.py` και `stats.py` χρειάζονται το matplotlib (η
+μοναδική εξάρτηση) για τα γραφήματα.
 
 ## Πηγή
 

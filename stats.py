@@ -13,15 +13,34 @@
 """
 
 import json
+import os
 import statistics as st
 from collections import defaultdict
 
+import matplotlib
+
+matplotlib.use("Agg")  # headless backend for CI
+import matplotlib.pyplot as plt
+
+plt.rcParams["font.family"] = "DejaVu Sans"  # has Greek glyphs
+
 LATEST = "data/latest.json"
 OUT = "STATS.md"
+ASSETS = "assets"
+BLUE = "#2563eb"
 
 # Όρια αξιοπιστίας: κόβουν τιμές μονάδας λανθασμένα κολλημένες σε πολυσυσκευασίες.
 MIN_PRICE = 1.0          # αγνόησε «φθηνότερες» τιμές κάτω από €1 στις διαφορές
 MIN_UNIT = 0.5           # κατώφλι €/μονάδα για συγκρίσεις ανά μονάδα
+
+
+def _save(fig, name):
+    os.makedirs(ASSETS, exist_ok=True)
+    path = os.path.join(ASSETS, name)
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
+    return path
 
 
 def load():
@@ -121,7 +140,20 @@ def stat_leaderboard(prods, gr, names):
         pct = wins[r] / appears[r] * 100
         ap = st.mean(prem[r]) if prem[r] else 0
         tbl.append(f"| {names[r]} | {pct:.0f}% | +{ap:.0f}% |")
-    return story + "\n" + "\n".join(tbl)
+
+    # Γράφημα: πόσο συχνά είναι το φθηνότερο
+    labels = [names[r] for r in order][::-1]
+    vals = [wins[r] / appears[r] * 100 for r in order][::-1]
+    fig, ax = plt.subplots(figsize=(8, 4), dpi=140)
+    bars = ax.barh(labels, vals, color=BLUE)
+    ax.bar_label(bars, fmt="%.0f%%", padding=3, fontsize=9)
+    ax.set_xlabel("% των προϊόντων όπου έχει τη φθηνότερη τιμή")
+    ax.set_title("Ποιο σούπερ μάρκετ είναι πιο συχνά το φθηνότερο", loc="left")
+    ax.set_xlim(0, max(vals) * 1.15)
+    for s in ("top", "right"):
+        ax.spines[s].set_visible(False)
+    img = _save(fig, "cheapest.png")
+    return story + f"\n![Κατάταξη φθηνότερου]({img})\n\n" + "\n".join(tbl)
 
 
 def stat_categories(prods, gr):
@@ -145,7 +177,20 @@ def stat_categories(prods, gr):
            "|---|---|---|"]
     for c in rank[:10]:
         tbl.append(f"| {c} | {st.mean(cat[c]):.0f}% | {len(cat[c])} |")
-    return story + "\n" + "\n".join(tbl)
+
+    # Γράφημα: κατηγορίες με τη μεγαλύτερη διαφορά τιμής
+    top10 = rank[:10][::-1]
+    vals = [st.mean(cat[c]) for c in top10]
+    fig, ax = plt.subplots(figsize=(8, 4), dpi=140)
+    bars = ax.barh(top10, vals, color=BLUE)
+    ax.bar_label(bars, fmt="%.0f%%", padding=3, fontsize=9)
+    ax.set_xlabel("μέση διαφορά τιμής μεταξύ σούπερ μάρκετ")
+    ax.set_title("Πού αξίζει να ψάξεις πριν αγοράσεις", loc="left")
+    ax.set_xlim(0, max(vals) * 1.15)
+    for s in ("top", "right"):
+        ax.spines[s].set_visible(False)
+    img = _save(fig, "shop_around.png")
+    return story + f"\n![Διαφορά ανά κατηγορία]({img})\n\n" + "\n".join(tbl)
 
 
 def stat_private_label(prods, gr):
@@ -205,8 +250,28 @@ def stat_greece_vs_europe(prods, gr, eu):
         f"φθηνότερη — η διάμεση διαφορά είναι **{median:+.0f}%** σε σχέση με την Ευρώπη. "
         "Οι ακρότητες όμως είναι έντονες: "
         f"**{much_ch:,} προϊόντα ({much_ch/n*100:.0f}%)** είναι πάνω από 20% φθηνότερα εδώ, "
-        f"ενώ **{much_pr:,} ({much_pr/n*100:.0f}%)** πάνω από 20% ακριβότερα.\n\n"
-        "**Πολύ φθηνότερα στην Ελλάδα:**\n")
+        f"ενώ **{much_pr:,} ({much_pr/n*100:.0f}%)** πάνω από 20% ακριβότερα.\n\n")
+
+    # Γράφημα: κατανομή διαφοράς τιμής Ελλάδας vs Ευρώπης
+    clipped = [max(-100, min(100, x)) for x in deltas]
+    fig, ax = plt.subplots(figsize=(8, 4), dpi=140)
+    bins = list(range(-100, 105, 10))
+    _, edges, patches = ax.hist(clipped, bins=bins, edgecolor="white")
+    for patch, left in zip(patches, edges[:-1]):
+        patch.set_facecolor("#16a34a" if left < 0 else "#dc2626")  # φθηνότερα/ακριβότερα
+    ax.axvline(0, color="#374151", linewidth=1)
+    ax.axvline(median, color=BLUE, linewidth=2, linestyle="--",
+               label=f"διάμεσος {median:+.0f}%")
+    ax.set_xlabel("διαφορά τιμής Ελλάδας vs Ευρώπης, ανά μονάδα (%)")
+    ax.set_ylabel("αριθμός προϊόντων")
+    ax.set_title("Πράσινο = φθηνότερα στην Ελλάδα   |   Κόκκινο = ακριβότερα",
+                 loc="left", fontsize=11)
+    ax.legend(loc="upper right")
+    for s in ("top", "right"):
+        ax.spines[s].set_visible(False)
+    chart = _save(fig, "greece_vs_europe.png")
+    story += (f"![Κατανομή Ελλάδα vs Ευρώπη]({chart})\n\n"
+              "**Πολύ φθηνότερα στην Ελλάδα:**\n")
     t1 = ["| Προϊόν | Ελλάδα | Ευρώπη | Διαφορά |", "|---|---|---|---|"]
     for pct, gm, em, name, u in rows[:6]:
         t1.append(f"| {name} | €{gm:.2f}/{u} | €{em:.2f}/{u} | **{pct:.0f}%** |")
