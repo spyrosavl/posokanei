@@ -28,8 +28,41 @@ jobs:
       - name: Install chart dependencies
         run: pip install -r requirements.txt
 
+      - name: Connect to Greece via NordVPN (OpenVPN)
+        env:
+          NORDVPN_USER: ${{ secrets.NORDVPN_USER }}
+          NORDVPN_PASS: ${{ secrets.NORDVPN_PASS }}
+        run: |
+          set -euo pipefail
+          sudo apt-get update && sudo apt-get install -y openvpn jq
+          # Pick a recommended Greek server (country_id 84 = Greece).
+          HOST=$(curl -s "https://api.nordvpn.com/v1/servers/recommendations?filters%5Bcountry_id%5D=84&limit=1" | jq -r '.[0].hostname')
+          echo "Using NordVPN server: $HOST"
+          curl -sf -o gr.ovpn "https://downloads.nordcdn.com/configs/files/ovpn_udp/servers/${HOST}.udp.ovpn"
+          printf '%s\n%s\n' "$NORDVPN_USER" "$NORDVPN_PASS" > auth.txt
+          chmod 600 auth.txt
+          sudo openvpn --config gr.ovpn --auth-user-pass auth.txt --daemon --log vpn.log --writepid vpn.pid
+          # Wait up to 60s for the tunnel to land in Greece.
+          for i in $(seq 1 30); do
+            CC=$(curl -s --max-time 5 https://ipinfo.io/country || true)
+            [ "$CC" = "GR" ] && break
+            sleep 2
+          done
+          rm -f auth.txt
+          CC=$(curl -s --max-time 8 https://ipinfo.io/country || true)
+          if [ "$CC" != "GR" ]; then
+            echo "VPN did not reach Greece (got '$CC'). OpenVPN log:"
+            sudo cat vpn.log || true
+            exit 1
+          fi
+          echo "Tunnel up — exit IP is in: $CC"
+
       - name: Fetch snapshot
         run: python fetch.py
+
+      - name: Disconnect VPN
+        if: always()
+        run: sudo killall openvpn || true
 
       - name: Render chart
         run: python chart.py
