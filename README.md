@@ -1,50 +1,50 @@
 # posokanei-archive
 
-![Products fetched per day](assets/products.png)
+![Προϊόντα που καταγράφονται ανά ημέρα](assets/products.png)
 
-Daily archival snapshots of all products and prices from the Greek price
-observatory **[posokanei.gov.gr](https://posokanei.gov.gr)** (Παρατηρητήριο
-Τιμών), fetched from its public API.
+Καθημερινά αρχειακά στιγμιότυπα όλων των προϊόντων και των τιμών από το ελληνικό
+Παρατηρητήριο Τιμών **[posokanei.gov.gr](https://posokanei.gov.gr)**, μέσω του
+δημόσιου API του.
 
-A GitHub Action runs once a day, downloads the full catalogue (~8,600 products
-with per-retailer prices), and commits a snapshot. The growing series of
-snapshots forms a historical price record.
+Ένα GitHub Action τρέχει μία φορά την ημέρα, κατεβάζει ολόκληρο τον κατάλογο
+(~8.600 προϊόντα με τιμές ανά αλυσίδα) και αποθηκεύει ένα στιγμιότυπο. Η σειρά
+των στιγμιότυπων που μεγαλώνει σχηματίζει ένα ιστορικό αρχείο τιμών.
 
-**👉 See [STATS.md](STATS.md) for daily "wow" stats** — biggest price gaps
-between supermarkets, the cheapest-chain leaderboard, own-brand savings, and
-Greece-vs-Europe price comparisons.
+**👉 Δες το [STATS.md](STATS.md) για καθημερινά στατιστικά** — οι μεγαλύτερες
+διαφορές τιμής μεταξύ σούπερ μάρκετ, η κατάταξη του φθηνότερου, η οικονομία από
+τα προϊόντα ιδιωτικής ετικέτας και η σύγκριση Ελλάδας-Ευρώπης.
 
-## Layout
+## Δομή
 
 ```
 data/
-  latest.json                   # pointer to the newest snapshot
-  history.csv                   # date,total,collected — one row per day
+  latest.json                   # δείκτης προς το νεότερο στιγμιότυπο
+  history.csv                   # date,total,collected — μία γραμμή ανά ημέρα
   2026/
-    posokanei-2026-06-22.json   # one JSON snapshot per day
+    posokanei-2026-06-22.json   # ένα JSON στιγμιότυπο ανά ημέρα
 assets/
-  products.png                  # daily-regenerated chart (shown above)
-STATS.md                        # daily-regenerated price stats
+  products.png                  # γράφημα που ανανεώνεται καθημερινά (πιο πάνω)
+STATS.md                        # στατιστικά τιμών που ανανεώνονται καθημερινά
 ```
 
-Snapshots are stored as **plain, pretty-printed JSON** with products sorted by
-`id` and stable key order. Each working-tree file is ~20 MB, but because
-consecutive days are nearly identical line-for-line, git's delta compression
-stores each new day as a small delta — keeping repository growth modest
-(typically well under 1 MB of pack growth per day).
+Τα στιγμιότυπα αποθηκεύονται ως **απλό, μορφοποιημένο JSON** με τα προϊόντα
+ταξινομημένα κατά `id` και σταθερή σειρά κλειδιών. Κάθε αρχείο είναι ~20 MB, αλλά
+επειδή οι διαδοχικές ημέρες είναι σχεδόν πανομοιότυπες γραμμή προς γραμμή, η
+συμπίεση delta του git αποθηκεύει κάθε νέα ημέρα ως μικρή διαφορά — κρατώντας την
+αύξηση του αποθετηρίου μικρή (συνήθως αρκετά κάτω από 1 MB ανά ημέρα).
 
-Each snapshot is a single JSON object:
+Κάθε στιγμιότυπο είναι ένα JSON αντικείμενο:
 
-| field        | description                                              |
+| πεδίο        | περιγραφή                                                |
 |--------------|----------------------------------------------------------|
-| `date`       | snapshot date (UTC)                                      |
-| `fetched_at` | UTC timestamp of the crawl                               |
-| `total`      | product count reported by the API                        |
+| `date`       | ημερομηνία στιγμιότυπου (UTC)                            |
+| `fetched_at` | χρονοσφραγίδα UTC της λήψης                              |
+| `total`      | πλήθος προϊόντων όπως το αναφέρει το API                 |
 | `retailers`  | `/meta/retailers?countries=all`                          |
 | `categories` | `/meta/categories`                                       |
-| `products`   | every product, all pages merged — incl. `retailer_prices` and `price_stats` |
+| `products`   | όλα τα προϊόντα, όλες οι σελίδες ενωμένες — μαζί με `retailer_prices` και `price_stats` |
 
-## Reading a snapshot
+## Διάβασμα ενός στιγμιότυπου
 
 ```bash
 jq '.total' data/2026/posokanei-2026-06-22.json
@@ -54,23 +54,25 @@ jq '.total' data/2026/posokanei-2026-06-22.json
 import json
 with open("data/2026/posokanei-2026-06-22.json", encoding="utf-8") as f:
     snap = json.load(f)
-print(snap["total"], "products")
+print(snap["total"], "προϊόντα")
 ```
 
-## Running locally
+## Τοπική εκτέλεση
 
 ```bash
-python fetch.py                       # writes today's snapshot + updates data/history.csv
-pip install -r requirements.txt       # only needed for the chart
-python chart.py                       # regenerates assets/products.png from history.csv
+python fetch.py                       # γράφει το σημερινό στιγμιότυπο + ενημερώνει το data/history.csv
+pip install -r requirements.txt       # χρειάζεται μόνο για το γράφημα
+python chart.py                       # ξαναφτιάχνει το assets/products.png από το history.csv
+python stats.py                       # ξαναφτιάχνει το STATS.md από το νεότερο στιγμιότυπο
 ```
 
-`fetch.py` is standard-library only. `chart.py` needs matplotlib (the sole
-dependency), kept separate so the crawler stays dependency-free.
+Το `fetch.py` χρησιμοποιεί μόνο τη standard library. Το `chart.py` χρειάζεται το
+matplotlib (η μοναδική εξάρτηση), που κρατιέται ξεχωριστά ώστε ο crawler να μένει
+χωρίς εξαρτήσεις. Το `stats.py` είναι επίσης μόνο standard library.
 
-## Source
+## Πηγή
 
-The product listing endpoint already embeds per-retailer prices, so one
-paginated crawl (`/products?countries=all`, `page_size=100`) captures the full
-price picture without hitting per-product endpoints. Data © the operators of
-posokanei.gov.gr; archived here for research/preservation.
+Το endpoint της λίστας προϊόντων ενσωματώνει ήδη τις τιμές ανά αλυσίδα, οπότε μία
+σελιδοποιημένη λήψη (`/products?countries=all`, `page_size=100`) καταγράφει
+ολόκληρη την εικόνα των τιμών χωρίς κλήσεις ανά προϊόν. Δεδομένα © οι φορείς του
+posokanei.gov.gr· αρχειοθετούνται εδώ για έρευνα/διατήρηση.
