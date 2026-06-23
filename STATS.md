@@ -1,6 +1,6 @@
-# 📊 Price stats — 2026-06-22
+# 📊 Price stats — 2026-06-23
 
-Auto-generated from the latest snapshot (8,646 products, 10 Greek supermarkets). Regenerated daily by `stats.py`.
+Auto-generated from the latest snapshot (8,550 products, 10 Greek supermarkets). Regenerated daily by `stats.py`.
 
 Cross-supermarket comparisons are restricted to Greek chains and filtered to remove pack-size mis-tags (single-unit prices mistakenly attached to multipack listings in the source data).
 
@@ -27,16 +27,16 @@ Across **5,881** products sold at ≥2 Greek chains — who wins on price, and h
 
 | Supermarket | Cheapest | Avg premium over cheapest |
 |---|---|---|
-| Lidl | 53.6% | +8.0% |
-| Σκλαβενίτης | 44.4% | +8.8% |
-| Χαλκιαδάκης | 41.0% | +11.2% |
-| Μασούτης | 28.4% | +18.1% |
+| Lidl | 53.9% | +7.6% |
+| Σκλαβενίτης | 44.7% | +8.7% |
+| Χαλκιαδάκης | 40.8% | +11.2% |
+| Μασούτης | 28.3% | +17.8% |
 | Γαλαξίας | 25.7% | +17.9% |
 | My Market | 20.8% | +15.8% |
-| Κρητικός | 19.5% | +19.3% |
-| ΣΥΝ.ΚΑ | 17.1% | +19.5% |
-| Market In | 14.6% | +19.3% |
-| ΑΒ Βασιλόπουλος | 10.2% | +19.8% |
+| Κρητικός | 19.4% | +19.3% |
+| ΣΥΝ.ΚΑ | 17.0% | +19.3% |
+| Market In | 15.1% | +19.2% |
+| ΑΒ Βασιλόπουλος | 10.2% | +19.7% |
 
 ## 🛒 Where shopping around pays off most
 
@@ -51,9 +51,9 @@ Average price spread across chains, by category — the aisles that reward compa
 | Βαφές Μαλλιών | 44% | 108 |
 | Εσπρέσσο | 42% | 36 |
 | Αποσμητικά | 40% | 62 |
-| Εντομοκτόνα, Εντομοαπωθητικά | 40% | 112 |
 | Πουλερικά, Αλλαντικά | 38% | 55 |
 | Styling | 37% | 91 |
+| Εντομοκτόνα, Εντομοαπωθητικά | 36% | 112 |
 
 ## 🏷️ Own-brand vs branded savings
 
@@ -63,10 +63,10 @@ How much private label undercuts branded products, per unit (median €/unit):
 |---|---|---|---|
 | Γάτα | €1.98/u | €7.77/u | **75%** |
 | Κρασί | €2.04/u | €6.72/u | **70%** |
-| Μαρμελάδα | €3.37/u | €10.31/u | **67%** |
 | Styling | €7.22/u | €21.60/u | **67%** |
-| Σκύλος | €1.40/u | €4.00/u | **65%** |
+| Σκύλος | €1.42/u | €4.00/u | **64%** |
 | Μακρύκοκο Ρύζι | €1.56/u | €4.37/u | **64%** |
+| Μαρμελάδα | €3.90/u | €10.40/u | **62%** |
 | Μπισκότα | €3.70/u | €9.72/u | **62%** |
 | Χλωρίνη | €0.80/u | €2.07/u | **62%** |
 | Αλεύρι | €0.66/u | €1.68/u | **61%** |
@@ -74,26 +74,26 @@ How much private label undercuts branded products, per unit (median €/unit):
 
 ## 🇬🇷🇪🇺 Greece vs the rest of Europe
 
-Per-unit prices for **1,541** products carried by both Greek and non-Greek retailers. Median Greek price is **-3.4%** vs Europe.
+Per-unit prices for **1,587** products carried by both Greek and non-Greek retailers. Median Greek price is **-5.2%** vs Europe.
 
 **Much cheaper in Greece:**
 
 | Product | Greece | Europe | Difference |
 |---|---|---|---|
 | JOHNSON  Αφρόλουτρο Άνθη Ροδιάς 750ml | €3.05/L | €8.77/L | **-65%** |
-| HEAD & SHOULDERS Menthol Fresh Σαμπουάν Μαλλιών Αντιπυτιριδικό 625ml | €8.09/L | €22.38/L | **-64%** |
+| PARODONTAX Στοματικό Διάλυμα Active Gum Health Extra Fresh 500ml | €7.72/L | €22.18/L | **-65%** |
 | DOVE Αφρόλουτρο Men+Care Extra Fresh 400ml | €5.20/L | €14.30/L | **-64%** |
-| HEAD & SHOULDERS Citrus Fresh Σαμπουάν Αντιπυτιριδικό για Λιπαρά Μαλλιά 625ml | €8.19/L | €22.38/L | **-63%** |
-| LE PETIT MARSEILLAIS  Αφρόλουτρο Με Λουλούδι Τιάρε 250ml | €5.32/L | €13.96/L | **-62%** |
-| SANEX Expert Skin Health Αφρόλουτρο Protector Vegan 600ml | €4.97/L | €12.82/L | **-61%** |
+| DOVE Αφρόλουτρο Advanced Care Nourishing Care 600ml | €4.82/L | €12.15/L | **-60%** |
+| DOVE  Αφρόλουτρο Anti Stress 600ml | €5.07/L | €12.15/L | **-58%** |
+| DOVE  Αφρόλουτρο Deeply Nourishing 600ml | €5.07/L | €12.15/L | **-58%** |
 
 **Much pricier in Greece:**
 
 | Product | Greece | Europe | Difference |
 |---|---|---|---|
-| NESTLE Φρουτοπουρές 4 Φρούτα Από 4 Μηνών Χωρίς Γλούτενη Χωρίς Προσθήκη Ζάχαρης 90g | €18.55/kg | €6.56/kg | **+183%** |
 | NESTLE Φρουτοπουρές Μήλο Μπανάνα Βρώμη 90gr | €18.11/kg | €6.56/kg | **+176%** |
-| FINISH Αποσμητικό Πλυντηρίου Πιάτων Λεμόνι & Λάιμ 4ml | €11.93/L | €4.76/L | **+151%** |
-| NESTLE Φρουτοπουρές Μπανάνα Μήλο 90g | €18.89/kg | €7.67/kg | **+146%** |
 | HARIBO Tropifrutti Ζελεδάκια 175g | €14.09/kg | €6.80/kg | **+107%** |
 | HARIBO Pasta Frutta Ζελεδάκια 160g | €15.41/kg | €7.44/kg | **+107%** |
+| KNORR Ζωμός Λαχανικών Vegan 6 κύβοι 60g | €23.00/kg | €11.17/kg | **+106%** |
+| AUTAN Εντομοαπωθητικό Σπρέι Family Care 100ml | €81.80/L | €40.10/L | **+104%** |
+| ΟΛΥΜΠΟΣ Ice Tea Green Φράουλα Δυόσμος Ιβίσκος Χωρίς ζάχαρη 500ml | €3.00/L | €1.52/L | **+97%** |
