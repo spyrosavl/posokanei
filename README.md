@@ -25,7 +25,13 @@ data/
 assets/
   products.png                  # γράφημα που ανανεώνεται καθημερινά (πιο πάνω)
 STATS.md                        # στατιστικά τιμών που ανανεώνονται καθημερινά
+docs/
+  index.html                    # ίδια στατιστικά ως αναφορά για εκτύπωση/PDF (GitHub Pages)
 ```
+
+**📄 Καθημερινή αναφορά:** το [`docs/index.html`](docs/index.html) παρουσιάζει τα
+ίδια στατιστικά με το `STATS.md` ως μια κομψή, έτοιμη για εκτύπωση/PDF σελίδα και
+δημοσιεύεται αυτόματα στο GitHub Pages μετά από κάθε καθημερινό στιγμιότυπο.
 
 Τα στιγμιότυπα αποθηκεύονται ως **απλό, μορφοποιημένο JSON** με τα προϊόντα
 ταξινομημένα κατά `id` και σταθερή σειρά κλειδιών. Κάθε αρχείο είναι ~20 MB, αλλά
@@ -63,7 +69,8 @@ print(snap["total"], "προϊόντα")
 python fetch.py                       # γράφει το σημερινό στιγμιότυπο + ενημερώνει το data/history.csv
 pip install -r requirements.txt       # χρειάζεται μόνο για το γράφημα
 python chart.py                       # ξαναφτιάχνει το assets/products.png από το history.csv
-python stats.py                       # ξαναφτιάχνει το STATS.md από το νεότερο στιγμιότυπο
+python stats.py                       # ξαναφτιάχνει το STATS.md + docs/index.html από το νεότερο στιγμιότυπο
+python report.py                      # γρήγορο preview του docs/index.html με δοκιμαστικά δεδομένα
 ```
 
 Το `fetch.py` χρησιμοποιεί μόνο τη standard library, ώστε ο crawler να μένει

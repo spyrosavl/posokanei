@@ -153,7 +153,18 @@ def stat_leaderboard(prods, gr, names):
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
     img = _save(fig, "cheapest.png")
-    return story + f"\n![Κατάταξη φθηνότερου]({img})\n\n" + "\n".join(tbl)
+    data = {
+        "contested": contested,
+        "best_name": names[best],
+        "best_pct": round(wins[best] / appears[best] * 100),
+        "worst_name": names[worst],
+        "worst_premium": round(st.mean(prem[worst])) if prem[worst] else 0,
+        "rows": [{"name": names[r],
+                  "win_pct": round(wins[r] / appears[r] * 100),
+                  "premium": round(st.mean(prem[r])) if prem[r] else 0}
+                 for r in order],
+    }
+    return story + f"\n![Κατάταξη φθηνότερου]({img})\n\n" + "\n".join(tbl), data
 
 
 def stat_categories(prods, gr):
@@ -190,7 +201,9 @@ def stat_categories(prods, gr):
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
     img = _save(fig, "shop_around.png")
-    return story + f"\n![Διαφορά ανά κατηγορία]({img})\n\n" + "\n".join(tbl)
+    data = [{"cat": c, "pct": round(st.mean(cat[c])), "count": len(cat[c])}
+            for c in rank[:10]]
+    return story + f"\n![Διαφορά ανά κατηγορία]({img})\n\n" + "\n".join(tbl), data
 
 
 def stat_private_label(prods, gr):
@@ -216,7 +229,9 @@ def stat_private_label(prods, gr):
            "|---|---|---|---|"]
     for pct, c, mp, mb in gaps[:10]:
         tbl.append(f"| {c} | €{mp:.2f}/μον. | €{mb:.2f}/μον. | **{pct:.0f}%** |")
-    return story + "\n" + "\n".join(tbl)
+    data = [{"cat": c, "save_pct": round(pct), "mp": mp, "mb": mb}
+            for pct, c, mp, mb in gaps[:10]]
+    return story + "\n" + "\n".join(tbl), data
 
 
 def stat_greece_vs_europe(prods, gr, eu):
@@ -279,13 +294,31 @@ def stat_greece_vs_europe(prods, gr, eu):
           "| Προϊόν | Ελλάδα | Ευρώπη | Διαφορά |", "|---|---|---|---|"]
     for pct, gm, em, name, u in rows[-6:][::-1]:
         t2.append(f"| {name} | €{gm:.2f}/{u} | €{em:.2f}/{u} | **+{pct:.0f}%** |")
-    return story + "\n" + "\n".join(t1) + "\n" + "\n".join(t2)
+    data = {
+        "n": n, "cheaper": cheaper, "similar": similar, "pricier": pricier,
+        "cheaper_pct": round(cheaper / n * 100),
+        "similar_pct": round(similar / n * 100),
+        "pricier_pct": round(pricier / n * 100),
+        "median": round(median),
+        "much_ch": much_ch, "much_ch_pct": round(much_ch / n * 100),
+        "much_pr": much_pr, "much_pr_pct": round(much_pr / n * 100),
+        "cheap_rows": [{"name": name, "gm": gm, "em": em, "unit": u,
+                        "pct": round(pct)} for pct, gm, em, name, u in rows[:6]],
+        "pricey_rows": [{"name": name, "gm": gm, "em": em, "unit": u,
+                         "pct": round(pct)}
+                        for pct, gm, em, name, u in rows[-6:][::-1]],
+    }
+    return story + "\n" + "\n".join(t1) + "\n" + "\n".join(t2), data
 
 
 def main():
     snap, gr, eu, names = load()
     prods = snap["products"]
-    spread_md, _ = stat_spread(prods, gr, names)
+    spread_md, spread_rows = stat_spread(prods, gr, names)
+    leaderboard_md, leaderboard = stat_leaderboard(prods, gr, names)
+    categories_md, categories = stat_categories(prods, gr)
+    private_label_md, private_label = stat_private_label(prods, gr)
+    gve_md, gve = stat_greece_vs_europe(prods, gr, eu)
     parts = [
         f"# 📊 Τι κρύβουν οι τιμές των σούπερ μάρκετ — {snap['date']}",
         "",
@@ -299,14 +332,34 @@ def main():
         "πολυσυσκευασίες)._",
         "",
         spread_md, "",
-        stat_leaderboard(prods, gr, names), "",
-        stat_categories(prods, gr), "",
-        stat_private_label(prods, gr), "",
-        stat_greece_vs_europe(prods, gr, eu), "",
+        leaderboard_md, "",
+        categories_md, "",
+        private_label_md, "",
+        gve_md, "",
     ]
     with open(OUT, "w", encoding="utf-8") as fh:
         fh.write("\n".join(parts))
     print(f"wrote {OUT} for {snap['date']}")
+
+    # Ίδια νούμερα, αλλά ως έτοιμη για εκτύπωση/PDF αναφορά (GitHub Pages).
+    report_data = {
+        "date": snap["date"],
+        "total": snap["total"],
+        "n_gr": len(gr),
+        "leaderboard": leaderboard,
+        "categories": categories,
+        "private_label": private_label,
+        "gve": gve,
+        "spread": [{"name": name, "pct": round(pct), "lo": lo, "lo_chain": cheap,
+                    "hi": hi, "hi_chain": exp}
+                   for pct, _a, lo, hi, _n, name, cheap, exp in spread_rows[:5]],
+    }
+    import report
+    os.makedirs(report.OUT_DIR, exist_ok=True)
+    out_html = os.path.join(report.OUT_DIR, "index.html")
+    with open(out_html, "w", encoding="utf-8") as fh:
+        fh.write(report.render(report_data))
+    print(f"wrote {out_html} for {snap['date']}")
 
 
 if __name__ == "__main__":

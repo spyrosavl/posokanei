@@ -1,0 +1,38 @@
+name: Deploy report to GitHub Pages
+
+# Δημοσιεύει το docs/ (η καθημερινή αναφορά τιμών) στο GitHub Pages κάθε φορά
+# που αλλάζει — δηλαδή μετά από κάθε commit στιγμιότυπου από το snapshot.yml.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch: {}
+
+# Δικαιώματα που χρειάζεται το επίσημο Pages deployment.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Μία ενεργή δημοσίευση τη φορά· μην ακυρώνεις μια που τρέχει.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - id: deployment
+        uses: actions/deploy-pages@v4
