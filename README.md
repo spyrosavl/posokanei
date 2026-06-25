@@ -1,4 +1,4 @@
-# posokanei-archive
+# posokanei
 
 ![Προϊόντα που καταγράφονται ανά ημέρα](assets/products.png)
 
@@ -15,7 +15,7 @@
 τα προϊόντα ιδιωτικής ετικέτας και η σύγκριση Ελλάδας-Ευρώπης.
 
 **📄 Ή δες τα ίδια στατιστικά ως κομψή, έτοιμη για εκτύπωση/PDF αναφορά:
-👉 https://spyrosavl.github.io/posokanei-archive/** (ανανεώνεται καθημερινά).
+👉 https://spyrosavl.github.io/posokanei/** (ανανεώνεται καθημερινά).
 
 ## Δομή
 
@@ -34,7 +34,7 @@ docs/
 
 **📄 Καθημερινή αναφορά:** το [`docs/index.html`](docs/index.html) παρουσιάζει τα
 ίδια στατιστικά με το `STATS.md` ως μια κομψή, έτοιμη για εκτύπωση/PDF σελίδα,
-δημοσιευμένη στο **[spyrosavl.github.io/posokanei-archive](https://spyrosavl.github.io/posokanei-archive/)**
+δημοσιευμένη στο **[spyrosavl.github.io/posokanei](https://spyrosavl.github.io/posokanei/)**
 και ανανεωμένη αυτόματα μετά από κάθε καθημερινό στιγμιότυπο.
 
 Τα στιγμιότυπα αποθηκεύονται ως **απλό, μορφοποιημένο JSON** με τα προϊόντα

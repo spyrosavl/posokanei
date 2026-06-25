@@ -34,7 +34,7 @@ import urllib.request
 BASE = "https://api.posokanei.gov.gr"
 PAGE_SIZE = 100          # API maximum
 COUNTRIES = "all"        # full catalogue (GR + international)
-USER_AGENT = "posokanei-archive/1.0 (+https://github.com/spyrosavl/posokanei-archive)"
+USER_AGENT = "posokanei/1.0 (+https://github.com/spyrosavl/posokanei)"
 TIMEOUT = 60
 MAX_RETRIES = 5
 RETRY_BACKOFF = 3        # seconds, multiplied by attempt number
