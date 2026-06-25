@@ -11,6 +11,10 @@ import html
 
 OUT_DIR = "docs"
 
+# Πηγές (ανοιχτά δεδομένα + κώδικας) — εμφανίζονται με συνδέσμους στη σελίδα.
+SOURCE_URL = "https://posokanei.gov.gr"          # επίσημο Παρατηρητήριο Τιμών
+REPO_URL = "https://github.com/spyrosavl/posokanei"  # ανοιχτός κώδικας + στιγμιότυπα
+
 # Μήνες στη γενική (όπως στις ελληνικές ημερομηνίες) — με και χωρίς τόνο.
 _MONTHS = ["Ιανουαρίου", "Φεβρουαρίου", "Μαρτίου", "Απριλίου", "Μαΐου",
            "Ιουνίου", "Ιουλίου", "Αυγούστου", "Σεπτεμβρίου", "Οκτωβρίου",
@@ -223,6 +227,13 @@ def render(d):
     gve = d["gve"]
     spread = d["spread"]
 
+    # Σύνδεσμος στο ακριβές στιγμιότυπο δεδομένων που χρησιμοποιήθηκε (αναπαραγωγή).
+    src_path = d.get("source_path")
+    snapshot_link = (
+        f' · <a href="{REPO_URL}/blob/main/{_esc(src_path)}"'
+        ' style="color:#14796A; font-weight:700;">δεδομένα στιγμιότυπου</a>'
+        if src_path else "")
+
     top_cat = cats[0] if cats else {"cat": "—", "pct": 0}
     top_pl = pl[0] if pl else {"cat": "—", "save_pct": 0}
     top_spread = spread[0] if spread else None
@@ -317,7 +328,7 @@ def render(d):
       <div style="font-size:12.5px; font-weight:700; color:#6B7370; margin-top:5px;">συγκρίσιμα με Ευρώπη</div>
     </div>
   </div>
-  <p class="pad" style="font-size:11.5px; color:#9A9384; margin:14px 0 0; font-style:italic;">Οι συγκρίσεις αφορούν μόνο ελληνικές αλυσίδες και έχουν καθαριστεί από λάθη του Παρατηρητηρίου (τιμές μονάδας λανθασμένα συνδεδεμένες με πολυσυσκευασίες).</p>
+  <p class="pad" style="font-size:11.5px; color:#9A9384; margin:14px 0 0; font-style:italic;">Πηγή δεδομένων: <a href="{SOURCE_URL}" style="color:#7C8077; font-weight:700;">Παρατηρητήριο Τιμών</a>. Οι συγκρίσεις αφορούν μόνο ελληνικές αλυσίδες και έχουν καθαριστεί από λάθη του Παρατηρητηρίου (τιμές μονάδας λανθασμένα συνδεδεμένες με πολυσυσκευασίες).</p>
 
   <!-- ============ SECTION 1 — CHEAPEST RANKING ============ -->
   <section class="pad" style="margin-top:40px;">
@@ -326,7 +337,7 @@ def render(d):
       <span style="font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#14796A; letter-spacing:.04em;">ΠΟΙΟ ΕΙΝΑΙ ΤΟ ΦΘΗΝΟΤΕΡΟ;</span>
     </div>
     <h2 style="font-family:'Nunito',sans-serif; font-weight:900; font-size:30px; line-height:1.08; margin:10px 0 0; max-width:6.6in;">Πιο συχνά φθηνότερο βγαίνει το <span style="color:#14796A;">{_esc(lb["best_name"])}</span></h2>
-    <p style="font-size:15px; line-height:1.6; color:#454B48; max-width:6.4in; margin:10px 0 0;">Συγκρίναμε <b>{_int(contested)}</b> προϊόντα που πωλούνται σε τουλάχιστον δύο ελληνικές αλυσίδες. Το {_esc(lb["best_name"])} έχει την καλύτερη τιμή στο <b>{lb["best_pct"]}%</b> των περιπτώσεων. Στο άλλο άκρο, στο {_esc(lb["worst_name"])} πληρώνεις κατά μέσο όρο <b>+{lb["worst_premium"]}%</b> παραπάνω από το να αγόραζες κάθε προϊόν εκεί που είναι φθηνότερο.</p>
+    <p style="font-size:15px; line-height:1.6; color:#454B48; max-width:6.4in; margin:10px 0 0;">Συγκρίναμε <b>{_int(contested)}</b> προϊόντα που πωλούνται σε τουλάχιστον δύο ελληνικές αλυσίδες. Το {_esc(lb["best_name"])} έχει την καλύτερη τιμή στο <b>{lb["best_pct"]}%</b> των περιπτώσεων. Στο άλλο άκρο, το {_esc(lb["worst_name"])} σπανιότερα βγαίνει το φθηνότερο: αν αγόραζες όλο το καλάθι εκεί θα πλήρωνες κατά μέσο όρο <b>+{lb["worst_premium"]}%</b> σε σχέση με το να έπαιρνες κάθε προϊόν εκεί που είναι φθηνότερο.</p>
 
     <figure class="keep" style="margin:22px 0 0; background:#FBF4E6; border:2px solid #DECFB0; border-radius:18px; padding:20px 22px;">
       <div style="display:flex; justify-content:space-between; font-family:'Nunito',sans-serif; font-weight:800; font-size:11.5px; color:#8A8472; letter-spacing:.03em; margin-bottom:14px;">
@@ -335,7 +346,7 @@ def render(d):
       <div style="display:flex; flex-direction:column; gap:11px;">
         {_leader_rows(lb["rows"])}
       </div>
-      <figcaption style="font-size:11.5px; color:#9A9384; margin-top:14px;">«Φορές φθηνότερο» = ποσοστό προϊόντων όπου η αλυσίδα έχει τη χαμηλότερη τιμή. «Μέση επιβάρυνση» = πόσο παραπάνω πληρώνεις κατά μέσο όρο σε σχέση με το φθηνότερο.</figcaption>
+      <figcaption style="font-size:11.5px; color:#9A9384; margin-top:14px;">«Φορές φθηνότερο» = ποσοστό προϊόντων όπου η αλυσίδα έχει τη χαμηλότερη τιμή. «Μέση επιβάρυνση» = πόσο παραπάνω πληρώνεις κατά μέσο όρο σε σχέση με το φθηνότερο. Κάθε αλυσίδα μετριέται μόνο στα προϊόντα που πράγματι διαθέτει.</figcaption>
     </figure>
   </section>
 
@@ -365,7 +376,7 @@ def render(d):
       <span style="font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#7A4E8C; letter-spacing:.04em;">🇬🇷 ΕΛΛΑΔΑ vs ΕΥΡΩΠΗ 🇪🇺</span>
     </div>
     <h2 style="font-family:'Nunito',sans-serif; font-weight:900; font-size:30px; line-height:1.08; margin:10px 0 0; max-width:6.6in;">Η Ελλάδα βγαίνει <span style="color:{gve_color};">{gve_word}</span> — με μεγάλες ακρότητες</h2>
-    <p style="font-size:15px; line-height:1.6; color:#454B48; max-width:6.5in; margin:10px 0 0;">Συγκρίναμε <b>{_int(eu_n)}</b> προϊόντα που πωλούνται και στην Ελλάδα και σε άλλες ευρωπαϊκές αλυσίδες, <b>ανά μονάδα</b> (κιλό ή λίτρο). Η διάμεση διαφορά είναι <b>{_pct_signed(median)}</b>: {gve_dir} εδώ. Όμως οι ακρότητες είναι έντονες.</p>
+    <p style="font-size:15px; line-height:1.6; color:#454B48; max-width:6.5in; margin:10px 0 0;">Συγκρίναμε <b>{_int(eu_n)}</b> προϊόντα που πωλούνται και στην Ελλάδα και σε τουλάχιστον δύο άλλες ευρωπαϊκές χώρες, <b>ανά μονάδα</b> (κιλό ή λίτρο). Η διάμεση διαφορά είναι <b>{_pct_signed(median)}</b>: {gve_dir} εδώ. Όμως οι ακρότητες είναι έντονες.</p>
 
     <figure class="keep" style="margin:20px 0 0; background:#FBF4E6; border:2px solid #DECFB0; border-radius:18px; padding:20px 22px;">
       <div style="display:flex; height:46px; border-radius:12px; overflow:hidden; font-family:'Nunito',sans-serif; font-weight:900; color:#fff;">
@@ -441,7 +452,15 @@ def render(d):
   <footer class="pad" style="margin-top:46px;">
     <div style="border-top:2px dashed #C9B894; padding-top:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
       <div style="font-family:'Nunito',sans-serif; font-weight:900; font-size:15px; color:#14796A;">🛒 Παρατηρητήριο Τιμών · Καθημερινή Ανάλυση</div>
-      <div style="font-size:11.5px; color:#9A9384;">Πηγή δεδομένων: Παρατηρητήριο Τιμών · Στιγμιότυπο {_esc(date_foot)}</div>
+      <div style="font-size:11.5px; color:#9A9384;">Στιγμιότυπο {_esc(date_foot)}</div>
+    </div>
+    <div style="font-size:11.5px; color:#9A9384; line-height:1.85; margin-top:12px;">
+      <b style="color:#7C8077;">Πηγές &amp; μεθοδολογία.</b>
+      Δεδομένα: επίσημο <a href="{SOURCE_URL}" style="color:#14796A; font-weight:700;">Παρατηρητήριο Τιμών (posokanei.gov.gr)</a>{snapshot_link}.
+      Ανοιχτός κώδικας: <a href="{REPO_URL}/blob/main/stats.py" style="color:#14796A; font-weight:700;">stats.py</a> (υπολογισμοί) ·
+      <a href="{REPO_URL}/blob/main/report.py" style="color:#14796A; font-weight:700;">report.py</a> (αυτή η σελίδα) ·
+      <a href="{REPO_URL}" style="color:#14796A; font-weight:700;">όλο το αποθετήριο &amp; τα ημερήσια στιγμιότυπα στο GitHub</a>.
+      Όλες οι συγκρίσεις είναι ανά μονάδα όπου χρειάζεται και καθαρισμένες από προφανή σφάλματα τιμών.
     </div>
   </footer>
 </main>
@@ -452,6 +471,7 @@ def render(d):
 
 _DEMO = {
     "date": "2026-06-24", "total": 8164, "n_gr": 10,
+    "source_path": "data/2026/posokanei-2026-06-24.json",
     "leaderboard": {"contested": 5618, "best_name": "Lidl", "best_pct": 55,
                     "worst_name": "ΑΒ Βασιλόπουλος", "worst_premium": 19,
                     "rows": [{"name": "Lidl", "win_pct": 55, "premium": 7},
