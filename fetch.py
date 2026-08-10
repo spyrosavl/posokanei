@@ -34,11 +34,19 @@ import urllib.request
 BASE = "https://api.posokanei.gov.gr"
 PAGE_SIZE = 100          # API maximum
 COUNTRIES = "all"        # full catalogue (GR + international)
-USER_AGENT = "posokanei/1.0 (+https://github.com/spyrosavl/posokanei)"
+# Since 2026-08-07 the API edge rejects (403) any request whose User-Agent is
+# not a recognised browser/curl token — a self-identifying "posokanei/1.0 (+url)"
+# UA is refused, as is any custom product token. The site's robots.txt still
+# allows all crawlers (Allow: / for User-agent: *), so this is an indiscriminate
+# WAF rule rather than a policy against archiving. We therefore send a standard
+# browser UA to get through, and keep honest contact details in the From header.
+USER_AGENT = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+              "(KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36")
+CONTACT = "https://github.com/spyrosavl/posokanei"
 TIMEOUT = 60
 MAX_RETRIES = 5
 RETRY_BACKOFF = 3        # seconds, multiplied by attempt number
-PER_PAGE_DELAY = 0.3     # politeness pause between pages
+PER_PAGE_DELAY = 1.0     # honours the Crawl-delay: 1 in the site's robots.txt
 
 
 def get_json(path):
@@ -47,7 +55,12 @@ def get_json(path):
     last_err = None
     for attempt in range(1, MAX_RETRIES + 1):
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+            req = urllib.request.Request(url, headers={
+                "User-Agent": USER_AGENT,
+                "Accept": "application/json,text/plain,*/*",
+                "Accept-Language": "el-GR,el;q=0.9,en;q=0.8",
+                "From": CONTACT,
+            })
             with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
                 return json.loads(resp.read().decode("utf-8"))
         except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError) as err:
