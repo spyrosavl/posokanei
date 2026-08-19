@@ -69,22 +69,37 @@ jobs:
 
       - name: Connect to Greece via NordVPN (OpenVPN)
         if: steps.check.outputs.needed == 'true'
-        timeout-minutes: 8
+        # Worst case is bounded by construction: apt 90+120+120s, then 3 servers
+        # x (20s config + 60s wait) = ~9.5 min. Healthy runs take well under 1.
+        timeout-minutes: 12
         env:
           NORDVPN_USER: ${{ secrets.NORDVPN_USER }}
           NORDVPN_PASS: ${{ secrets.NORDVPN_PASS }}
         run: |
           set -euo pipefail
-          sudo apt-get update && sudo apt-get install -y openvpn jq
 
-          # Every curl here is bounded. An unbounded one against NordVPN's API
-          # is what hung the 2026-08-19 run until the job limit killed it.
+          # `apt-get update` is what hung the 2026-08-19 runs — once for 5h59m
+          # until the job limit killed it. The runner's azure.archive.ubuntu.com
+          # mirror was refusing (Ign: lines), apt fell back to archive.ubuntu.com
+          # and stalled there with no per-connection timeout of its own.
+          # So: bound every acquisition, wrap each call in `timeout`, and try the
+          # image's existing package index before refreshing it at all.
+          APT="-o Acquire::Retries=3 -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15"
+          if ! sudo timeout 90 apt-get $APT install -y --no-install-recommends openvpn jq; then
+            echo "install from the cached index failed; refreshing it and retrying"
+            sudo timeout 120 apt-get $APT update || true
+            sudo timeout 120 apt-get $APT install -y --no-install-recommends openvpn jq
+          fi
+          openvpn --version | head -1 || true   # openvpn --version exits 1
+
+          # Every curl here is bounded too: unbounded ones were a latent hang
+          # waiting to happen, even though apt is what actually fired.
           CURL="curl -sS --max-time 20 --retry 3 --retry-delay 2 --retry-all-errors"
 
           # Several recommended Greek servers (country_id 84 = Greece): an
           # individual host is sometimes unreachable, so we fall through to the
           # next rather than failing the whole day's snapshot.
-          $CURL "https://api.nordvpn.com/v1/servers/recommendations?filters%5Bcountry_id%5D=84&limit=5" \
+          $CURL "https://api.nordvpn.com/v1/servers/recommendations?filters%5Bcountry_id%5D=84&limit=3" \
             | jq -r '.[].hostname' > hosts.txt
           echo "Candidate servers:"; cat hosts.txt
 
