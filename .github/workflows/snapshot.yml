@@ -28,6 +28,11 @@ jobs:
       - name: Install chart dependencies
         run: pip install -r requirements.txt
 
+      # Offline: runs against archived snapshots, so it fails fast before we
+      # bother bringing up the VPN.
+      - name: Test fetch logic
+        run: python test_fetch.py
+
       - name: Connect to Greece via NordVPN (OpenVPN)
         env:
           NORDVPN_USER: ${{ secrets.NORDVPN_USER }}
