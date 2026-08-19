@@ -170,3 +170,61 @@ jobs:
             git commit -m "Snapshot $(date -u +%Y-%m-%d)"
             git push
           fi
+
+  # A failing snapshot was invisible until someone noticed the numbers had gone
+  # flat: the 2026-08-19 hang surfaced only as "cancelled", which reads like a
+  # human pressed stop. This job turns any bad run into a tracked issue and
+  # closes it again once a run succeeds, so a silent multi-day outage can't
+  # repeat.
+  notify:
+    needs: snapshot
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Open, update, or close the snapshot-failure issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RESULT: ${{ needs.snapshot.result }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          LABEL=snapshot-failure
+          gh label create "$LABEL" --repo "$REPO" --color B60205 \
+            --description "Automated: the daily snapshot run failed" 2>/dev/null || true
+          OPEN=$(gh issue list --repo "$REPO" --label "$LABEL" --state open \
+                   --limit 1 --json number -q '.[0].number // empty')
+
+          if [ "$RESULT" = "success" ]; then
+            if [ -n "$OPEN" ]; then
+              gh issue comment "$OPEN" --repo "$REPO" \
+                --body "Recovered: the snapshot run succeeded again. $RUN_URL"
+              gh issue close "$OPEN" --repo "$REPO"
+              echo "closed #$OPEN"
+            else
+              echo "run succeeded and nothing was open — nothing to do"
+            fi
+            exit 0
+          fi
+
+          # printf, not a quoted literal: YAML indentation inside a multi-line
+          # string would leak in and render the body as a markdown code block.
+          TODAY=$(date -u +%Y-%m-%d)
+          BODY=$(printf '%s\n' \
+            "The \`Daily snapshot\` workflow finished with **$RESULT** on $TODAY." \
+            "" \
+            "Run: $RUN_URL" \
+            "" \
+            "The 10:30 UTC retry re-takes the snapshot only when the day's file is missing, so it will cover this automatically. If that run fails too, there will be no snapshot for $TODAY and the gap is permanent — the API only serves current prices." \
+            "" \
+            "This issue closes itself when a run succeeds.")
+
+          if [ -n "$OPEN" ]; then
+            gh issue comment "$OPEN" --repo "$REPO" --body "$BODY"
+            echo "commented on #$OPEN"
+          else
+            gh issue create --repo "$REPO" --label "$LABEL" \
+              --title "Daily snapshot is failing" --body "$BODY"
+          fi
