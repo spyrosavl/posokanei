@@ -4,6 +4,10 @@ on:
   schedule:
     # 04:30 UTC daily (~07:30 Greece). Cron times are UTC and best-effort.
     - cron: "30 4 * * *"
+    # Safety net six hours later, for days the morning run fails or is starved
+    # by GitHub's scheduler. It exits early unless today's snapshot is actually
+    # missing, so on a normal day it costs one checkout and nothing more.
+    - cron: "30 10 * * *"
   workflow_dispatch: {}
 
 # Allow the job to push the new snapshot back to the repo.
@@ -24,20 +28,47 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The retry cron must not re-take a snapshot that already succeeded:
+      # prices and `fetched_at` drift during the day, so the commit step would
+      # always see a diff and would overwrite the morning's capture. Manual
+      # runs still force a re-take, matching fetch.py's idempotent-rerun design.
+      - name: Decide whether today's snapshot is still needed
+        id: check
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          TODAY=$(date -u +%Y-%m-%d)
+          FILE="data/${TODAY%%-*}/posokanei-${TODAY}.json"
+          if [ "$EVENT_NAME" != "schedule" ]; then
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+            echo "Manual run — taking the snapshot regardless of $FILE."
+          elif [ -f "$FILE" ]; then
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+            echo "$FILE already present — nothing to do."
+          else
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+            echo "$FILE missing — taking the snapshot."
+          fi
+
       - uses: actions/setup-python@v5
+        if: steps.check.outputs.needed == 'true'
         with:
           python-version: "3.12"
           cache: pip
 
       - name: Install chart dependencies
+        if: steps.check.outputs.needed == 'true'
         run: pip install -r requirements.txt
 
       # Offline: runs against archived snapshots, so it fails fast before we
       # bother bringing up the VPN.
       - name: Test fetch logic
+        if: steps.check.outputs.needed == 'true'
         run: python test_fetch.py
 
       - name: Connect to Greece via NordVPN (OpenVPN)
+        if: steps.check.outputs.needed == 'true'
         timeout-minutes: 8
         env:
           NORDVPN_USER: ${{ secrets.NORDVPN_USER }}
@@ -96,20 +127,24 @@ jobs:
       # fetch.py already retries each request 5x with backoff and caps every
       # request at 60s, so this bounds the crawl as a whole (~15 min healthy).
       - name: Fetch snapshot
+        if: steps.check.outputs.needed == 'true'
         timeout-minutes: 25
         run: python fetch.py
 
       - name: Disconnect VPN
-        if: always()
+        if: always() && steps.check.outputs.needed == 'true'
         run: sudo killall openvpn || true
 
       - name: Render chart
+        if: steps.check.outputs.needed == 'true'
         run: python chart.py
 
       - name: Compute stats
+        if: steps.check.outputs.needed == 'true'
         run: python stats.py
 
       - name: Commit snapshot
+        if: steps.check.outputs.needed == 'true'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
