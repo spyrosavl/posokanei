@@ -17,6 +17,10 @@ concurrency:
 jobs:
   snapshot:
     runs-on: ubuntu-latest
+    # A healthy run takes ~10-15 min. Without this the job inherits GitHub's
+    # 6-hour default, which is how the 2026-08-19 run sat hung all morning
+    # before being killed. Per-step limits below fail closer to the cause.
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
 
@@ -34,35 +38,65 @@ jobs:
         run: python test_fetch.py
 
       - name: Connect to Greece via NordVPN (OpenVPN)
+        timeout-minutes: 8
         env:
           NORDVPN_USER: ${{ secrets.NORDVPN_USER }}
           NORDVPN_PASS: ${{ secrets.NORDVPN_PASS }}
         run: |
           set -euo pipefail
           sudo apt-get update && sudo apt-get install -y openvpn jq
-          # Pick a recommended Greek server (country_id 84 = Greece).
-          HOST=$(curl -s "https://api.nordvpn.com/v1/servers/recommendations?filters%5Bcountry_id%5D=84&limit=1" | jq -r '.[0].hostname')
-          echo "Using NordVPN server: $HOST"
-          curl -sf -o gr.ovpn "https://downloads.nordcdn.com/configs/files/ovpn_udp/servers/${HOST}.udp.ovpn"
+
+          # Every curl here is bounded. An unbounded one against NordVPN's API
+          # is what hung the 2026-08-19 run until the job limit killed it.
+          CURL="curl -sS --max-time 20 --retry 3 --retry-delay 2 --retry-all-errors"
+
+          # Several recommended Greek servers (country_id 84 = Greece): an
+          # individual host is sometimes unreachable, so we fall through to the
+          # next rather than failing the whole day's snapshot.
+          $CURL "https://api.nordvpn.com/v1/servers/recommendations?filters%5Bcountry_id%5D=84&limit=5" \
+            | jq -r '.[].hostname' > hosts.txt
+          echo "Candidate servers:"; cat hosts.txt
+
           printf '%s\n%s\n' "$NORDVPN_USER" "$NORDVPN_PASS" > auth.txt
           chmod 600 auth.txt
-          sudo openvpn --config gr.ovpn --auth-user-pass auth.txt --daemon --log vpn.log --writepid vpn.pid
-          # Wait up to 60s for the tunnel to land in Greece.
-          for i in $(seq 1 30); do
-            CC=$(curl -s --max-time 5 https://ipinfo.io/country || true)
-            [ "$CC" = "GR" ] && break
-            sleep 2
-          done
+
+          connected=""
+          while read -r HOST; do
+            echo "--- trying $HOST"
+            sudo killall openvpn 2>/dev/null || true
+            if ! $CURL -f -o gr.ovpn "https://downloads.nordcdn.com/configs/files/ovpn_udp/servers/${HOST}.udp.ovpn"; then
+              echo "    could not download config for $HOST"
+              continue
+            fi
+            sudo openvpn --config gr.ovpn --auth-user-pass auth.txt \
+              --daemon --log vpn.log --writepid vpn.pid
+            # Wait up to 60s for the tunnel to land in Greece.
+            for i in $(seq 1 30); do
+              CC=$(curl -s --max-time 5 https://ipinfo.io/country || true)
+              if [ "$CC" = "GR" ]; then
+                connected="$HOST"
+                break
+              fi
+              sleep 2
+            done
+            if [ -n "$connected" ]; then
+              break
+            fi
+            echo "    $HOST did not come up. Last lines of the OpenVPN log:"
+            sudo tail -n 20 vpn.log || true
+          done < hosts.txt
+
           rm -f auth.txt
-          CC=$(curl -s --max-time 8 https://ipinfo.io/country || true)
-          if [ "$CC" != "GR" ]; then
-            echo "VPN did not reach Greece (got '$CC'). OpenVPN log:"
-            sudo cat vpn.log || true
+          if [ -z "$connected" ]; then
+            echo "No Greek NordVPN server reachable after $(wc -l < hosts.txt | tr -d ' ') attempts."
             exit 1
           fi
-          echo "Tunnel up — exit IP is in: $CC"
+          echo "Tunnel up via $connected — exit IP is in: GR"
 
+      # fetch.py already retries each request 5x with backoff and caps every
+      # request at 60s, so this bounds the crawl as a whole (~15 min healthy).
       - name: Fetch snapshot
+        timeout-minutes: 25
         run: python fetch.py
 
       - name: Disconnect VPN
