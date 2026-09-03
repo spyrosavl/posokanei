@@ -6,10 +6,13 @@ Runs against real archived snapshots, so it needs no network:
 """
 
 import contextlib
+import http.client
 import io
 import json
 import os
+import ssl
 import unittest
+import urllib.error
 import urllib.parse
 
 import fetch
@@ -147,6 +150,113 @@ class PartitionedCrawl(unittest.TestCase):
         with self.assertRaises(RuntimeError) as ctx:
             fetch.fetch_all_products(self.categories)
         self.assertIn("silently drop", str(ctx.exception))
+
+
+class FakeResponse:
+    """Just enough of an http.client response for get_json's `with` block."""
+
+    def __init__(self, body=b"", error=None):
+        self.body, self.error = body, error
+
+    def read(self):
+        if self.error is not None:
+            raise self.error
+        return self.body
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+
+class GetJsonRetries(unittest.TestCase):
+    """Transient failures must be retried, not allowed to abort the crawl.
+
+    urllib wraps only what fails while the connection is being opened; a
+    failure part-way through the body arrives as its raw http.client or socket
+    exception. The 2026-09-03 snapshot died on one such error 27 categories in,
+    so every transient shape is pinned here.
+    """
+
+    def setUp(self):
+        self._saved = (fetch.urllib.request.urlopen, fetch.time.sleep,
+                       fetch.RETRY_BACKOFF)
+        fetch.time.sleep = lambda _s: None
+        fetch.RETRY_BACKOFF = 0
+
+    def tearDown(self):
+        fetch.urllib.request.urlopen, fetch.time.sleep, fetch.RETRY_BACKOFF = (
+            self._saved)
+
+    def install(self, *responses):
+        """Serve `responses` in order, recording how many were consumed."""
+        calls = []
+
+        def urlopen(req, timeout=None):
+            calls.append(req.full_url)
+            return responses[min(len(calls) - 1, len(responses) - 1)]
+
+        fetch.urllib.request.urlopen = urlopen
+        return calls
+
+    def transients(self):
+        return [
+            # What actually broke the 2026-09-03 run.
+            http.client.IncompleteRead(b"", 45943),
+            http.client.RemoteDisconnected("closed by remote"),
+            http.client.BadStatusLine("garbage"),
+            ConnectionResetError(104, "Connection reset by peer"),
+            ssl.SSLError("read operation timed out"),
+            TimeoutError("timed out"),
+        ]
+
+    def test_retries_every_transient_error_raised_while_reading_the_body(self):
+        good = json.dumps({"ok": True}).encode("utf-8")
+        for err in self.transients():
+            with self.subTest(error=type(err).__name__):
+                calls = self.install(FakeResponse(error=err),
+                                     FakeResponse(body=good))
+                with contextlib.redirect_stderr(io.StringIO()):
+                    self.assertEqual(fetch.get_json("/x"), {"ok": True})
+                self.assertEqual(len(calls), 2)
+
+    def test_retries_a_body_that_is_not_valid_json(self):
+        good = json.dumps({"ok": True}).encode("utf-8")
+        calls = self.install(FakeResponse(body=b"<html>502</html>"),
+                             FakeResponse(body=good))
+        with contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(fetch.get_json("/x"), {"ok": True})
+        self.assertEqual(len(calls), 2)
+
+    def test_retries_errors_raised_while_opening_the_connection(self):
+        good = json.dumps({"ok": True}).encode("utf-8")
+        opening = [urllib.error.URLError("no route to host"),
+                   urllib.error.HTTPError("/x", 503, "Busy", {}, None)]
+        for err in opening:
+            with self.subTest(error=type(err).__name__):
+                responses = [FakeResponse(body=good)]
+                calls = []
+
+                def urlopen(req, timeout=None, _e=err):
+                    calls.append(req.full_url)
+                    if len(calls) == 1:
+                        raise _e
+                    return responses[0]
+
+                fetch.urllib.request.urlopen = urlopen
+                with contextlib.redirect_stderr(io.StringIO()):
+                    self.assertEqual(fetch.get_json("/x"), {"ok": True})
+                self.assertEqual(len(calls), 2)
+
+    def test_gives_up_after_the_retry_budget_and_names_the_cause(self):
+        calls = self.install(
+            FakeResponse(error=http.client.IncompleteRead(b"", 45943)))
+        with contextlib.redirect_stderr(io.StringIO()):
+            with self.assertRaises(RuntimeError) as ctx:
+                fetch.get_json("/x", retries=3)
+        self.assertEqual(len(calls), 3)
+        self.assertIn("IncompleteRead", str(ctx.exception))
 
 
 if __name__ == "__main__":
