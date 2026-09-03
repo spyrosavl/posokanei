@@ -24,6 +24,7 @@ Stdlib only (no pip install needed in CI).
 
 import csv
 import datetime as dt
+import http.client
 import json
 import os
 import sys
@@ -76,7 +77,16 @@ def get_json(path, retries=MAX_RETRIES):
             })
             with urllib.request.urlopen(req, timeout=TIMEOUT) as resp:
                 return json.loads(resp.read().decode("utf-8"))
-        except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError) as err:
+        # urllib only wraps failures raised while *opening* the connection.
+        # Anything that goes wrong once the body starts streaming arrives raw:
+        # the 2026-09-03 run died 27 categories in on an http.client
+        # IncompleteRead (0 of 45943 bytes) that fell straight through this
+        # clause, throwing away four minutes of crawl over one dropped
+        # response. OSError covers URLError, HTTPError and TimeoutError as well
+        # as bare connection resets; HTTPException covers IncompleteRead,
+        # RemoteDisconnected and BadStatusLine; JSONDecodeError covers a body
+        # that arrives complete but truncated or malformed.
+        except (OSError, http.client.HTTPException, json.JSONDecodeError) as err:
             last_err = err
             wait = RETRY_BACKOFF * attempt
             print(f"  ! {url} failed (attempt {attempt}/{retries}): {err}; "
