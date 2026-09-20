@@ -8,6 +8,10 @@ on:
     branches: [main]
     paths:
       - "docs/**"
+      - "data/latest.json"
+      - "stats.py"
+      - "report.py"
+      - "report_charts.py"
       - ".github/workflows/pages.yml"
   workflow_dispatch: {}
 
@@ -30,6 +34,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check report and charts
+        run: python -m unittest -v
+      - name: Generate report and shared charts
+        run: python stats.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

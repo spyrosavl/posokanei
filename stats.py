@@ -104,6 +104,7 @@ def stat_leaderboard(prods, gr, names):
         "worst_premium": round(st.mean(prem[worst])) if prem[worst] else 0,
         "rows": [{"name": names[r],
                   "win_pct": round(wins[r] / appears[r] * 100),
+                  "count": appears[r],
                   "premium": round(st.mean(prem[r])) if prem[r] else 0}
                  for r in order],
     }
@@ -197,10 +198,10 @@ def stat_private_label(prods, gr):
         if len(pv) >= 5 and len(br) >= 15:
             mp, mb = st.median(pv), st.median(br)
             if mb > 0:
-                gaps.append(((mb - mp) / mb * 100, c, mp, mb))
+                gaps.append(((mb - mp) / mb * 100, c, mp, mb, _u))
     gaps.sort(reverse=True)
-    return [{"cat": c, "save_pct": round(pct), "mp": mp, "mb": mb}
-            for pct, c, mp, mb in gaps[:10]]
+    return [{"cat": c, "save_pct": round(pct), "mp": mp, "mb": mb, "unit": unit}
+            for pct, c, mp, mb, unit in gaps[:10]]
 
 
 def main():
@@ -218,6 +219,8 @@ def main():
         "spread": stat_spread(prods, gr, names),
     }
     import report
+    import report_charts
+    report_charts.write(report_data, os.path.join(report.OUT_DIR, "assets"))
     os.makedirs(report.OUT_DIR, exist_ok=True)
     out_html = os.path.join(report.OUT_DIR, "index.html")
     with open(out_html, "w", encoding="utf-8") as fh:
