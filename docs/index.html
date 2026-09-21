@@ -3,147 +3,238 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light">
-<title>Πόσο κάνει τελικά; · 20 Σεπτεμβρίου 2026</title>
-<meta name="description" content="Οι τιμές των σούπερ μάρκετ, με μια ματιά. Καθημερινές συγκρίσεις τιμών, αλυσίδων και προϊόντων από τα δεδομένα του posokanei.gov.gr.">
-<link rel="stylesheet" href="report.css">
+<title>Παρατηρητήριο Τιμών · Καθημερινή Ανάλυση — 21 Σεπτεμβρίου 2026</title>
+<meta name="description" content="Καθημερινή ανάλυση τιμών από το ελληνικό Παρατηρητήριο Τιμών: ποιο σούπερ μάρκετ είναι φθηνότερο, πού αξίζει η σύγκριση, Ελλάδα vs Ευρώπη και ιδιωτική ετικέτα.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #E8DCC4; font-family: 'Mulish', sans-serif; color: #232826; -webkit-font-smoothing: antialiased; }
+  .doc { box-sizing: border-box; max-width: 8.5in; margin: 0 auto; background: #FBF4E6; padding: 0 0 0.9in 0; box-shadow: 0 24px 60px rgba(20,30,25,.14); }
+  .pad { padding: 0 0.7in; }
+  h1, h2, h3 { text-wrap: balance; margin: 0; }
+  p, li { text-wrap: pretty; }
+  @page { size: letter; margin: 0; }
+  @media print {
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    html, body { margin: 0; padding: 0; background: #fff; }
+    .doc { max-width: none !important; margin: 0 !important; box-shadow: none !important; }
+    h2, h3 { break-after: avoid; }
+    .keep, figure, tr { break-inside: avoid; }
+    .screen-only { display: none !important; }
+  }
+</style>
 </head>
 <body>
-<a class="skip-link" href="#main">Μετάβαση στην ανάλυση</a>
-<div class="wrap">
-<header class="topbar">
-  <a class="brand" href="#"><span class="brand-mark" aria-hidden="true">≈</span> posokanei<span class="brand-dot">.</span></a>
-  <nav aria-label="Εργαλεία"><a href="https://github.com/spyrosavl/posokanei">GitHub ↗</a><a href="https://github.com/spyrosavl/posokanei/blob/main/data/2026/posokanei-2026-09-20.json">Δεδομένα ↗</a><button onclick="window.print()">Εκτύπωση / PDF</button></nav>
-</header>
-<main id="main">
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="hero-copy"><p class="eyebrow"><span class="live-dot" aria-hidden="true"></span> ΚΑΘΗΜΕΡΙΝΗ ΑΝΑΛΥΣΗ · <time datetime="2026-09-20">20 Σεπτεμβρίου 2026</time></p>
-      <h1 id="hero-title">Πόσο κάνει<br><em>τελικά;</em></h1>
-      <p class="dek">Οι τιμές των σούπερ μάρκετ,<br>με μια ματιά.</p>
-      <p class="intro">Το ίδιο ράφι, άλλη τιμή. Συγκρίνουμε τα δεδομένα του Παρατηρητηρίου Τιμών για να δεις πού αξίζει να ψάξεις.</p>
-      <a class="text-link" href="#retailers">Εξερεύνησε τη σημερινή εικόνα ↓</a>
-    </div><div class="receipt"><div class="eyebrow">Η ΣΥΓΚΡΙΣΗ ΤΗΣ ΗΜΕΡΑΣ <span>ΣΗΜΕΡΑ</span></div>
-          <h2>Το ίδιο προϊόν.<br>Δύο διαφορετικές τιμές.</h2>
-          <p class="product">ΜΠΑΡΜΠΑ ΣΤΑΘΗΣ Αρακάς Βιολογικός 450g</p>
-          <div class="receipt-prices"><div><strong>€1,40</strong><span>Σκλαβενίτης</span></div>
-          <span class="arrow" aria-hidden="true">→</span><div><strong>€4,06</strong><span>Bazaar</span></div></div>
-          <div class="receipt-bottom"><span>Διαφορά <b>€2,66</b></span>
-          <a href="#price-gaps">Δες τις συγκρίσεις ↗</a></div></div>
-  </section>
-  <div class="coverage"><span><b>10.434</b> προϊόντα στον κατάλογο</span><span><b>11</b> ελληνικές αλυσίδες</span>
-    <span><b>6.946</b> προϊόντα σε ≥2 αλυσίδες</span><a href="#methodology">Πηγές &amp; μεθοδολογία ↗</a></div>
-  <nav class="takeaways" aria-label="Σημερινά ευρήματα">
-    <a href="#retailers"><span>ΣΥΧΝΟΤΕΡΑ ΣΤΗ ΧΑΜΗΛΟΤΕΡΗ ΤΙΜΗ</span><strong>Market In · 46%</strong><small>Στα συγκρίσιμα προϊόντα που διαθέτει ↗</small></a>
-    <a href="#categories"><span>ΜΕΓΑΛΥΤΕΡΗ ΜΕΣΗ ΔΙΑΦΟΡΑ</span><strong>Παγωτά · 69%</strong><small>Μεταξύ καταστημάτων, στο ίδιο προϊόν ↗</small></a>
-    <a href="#europe"><span>ΕΛΛΑΔΑ &amp; ΕΥΡΩΠΗ</span><strong>−4% διάμεση διαφορά</strong><small>Σε 698 συγκρίσιμα προϊόντα ↗</small></a>
-  </nav>
-  <nav class="section-nav" aria-label="Ενότητες"><a href="#retailers">01 Αλυσίδες</a><a href="#categories">02 Κατηγορίες</a><a href="#europe">03 Ευρώπη</a><a href="#price-gaps">04 Προϊόντα</a><a href="#private-label">05 Ιδιωτική ετικέτα</a></nav>
-  <div class="chart-grid">
-    <section id="retailers" class="panel">
-      <p class="eyebrow">01 / ΑΛΥΣΙΔΕΣ</p><h2>Ποιος βγαίνει<br>συχνότερα φθηνότερος;</h2>
-      <p>Μετράμε πόσο συχνά κάθε αλυσίδα έχει τη χαμηλότερη τιμή στα συγκρίσιμα προϊόντα που διαθέτει. Οι ισοπαλίες μετρούν για όλες τις αλυσίδες.</p>
-      <figure><img class="chart" src="assets/retailers.svg" alt="Κατάταξη αλυσίδων: ποσοστό προϊόντων στη χαμηλότερη τιμή και μέγεθος δείγματος. Ποιος έχει συχνότερα τη χαμηλότερη τιμή; · 2026-09-20 · posokanei.gov.gr · Market In · 46% · n=208 · Lidl · 42% · n=611 · Χαλκιαδάκης · 41% · n=4.369 · Σκλαβενίτης · 41% · n=5.585 · Μασούτης · 25% · n=5.804 · Γαλαξίας · 25% · n=5.062 · My Market · 23% · n=5.214 · Κρητικός · 17% · n=2.620 · Bazaar · 15% · n=2.869 · ΣΥΝ.ΚΑ · 14% · n=5.008 · ΑΒ Βασιλόπουλος · 10% · n=4.714 · 0% · 100% · Μερίδιο συγκρίσιμων προϊόντων κάθε αλυσίδας. · Οι ισοπαλίες μετρούν · n = προϊόντα που συγκρίθηκαν. · Διαφορετικό δείγμα ανά αλυσίδα · τουλάχιστον 50 προϊόντα." width="600" height="860" loading="lazy"><figcaption><a href="assets/retailers.svg" download>Λήψη γραφήματος SVG ↗</a></figcaption></figure>
-      <details><summary>Αριθμοί &amp; μέση επιβάρυνση</summary><div class="table-scroll" tabindex="0" role="region" aria-label="Στοιχεία αλυσίδων"><table><thead><tr><th>Αλυσίδα</th><th>Προϊόντα</th><th>Χαμηλότερη</th><th>Επιβάρυνση</th></tr></thead><tbody><tr><th scope="row">Market In</th><td>208</td><td>46%</td><td>+7%</td></tr><tr><th scope="row">Lidl</th><td>611</td><td>42%</td><td>+12%</td></tr><tr><th scope="row">Χαλκιαδάκης</th><td>4.369</td><td>41%</td><td>+11%</td></tr><tr><th scope="row">Σκλαβενίτης</th><td>5.585</td><td>41%</td><td>+10%</td></tr><tr><th scope="row">Μασούτης</th><td>5.804</td><td>25%</td><td>+21%</td></tr><tr><th scope="row">Γαλαξίας</th><td>5.062</td><td>25%</td><td>+18%</td></tr><tr><th scope="row">My Market</th><td>5.214</td><td>23%</td><td>+16%</td></tr><tr><th scope="row">Κρητικός</th><td>2.620</td><td>17%</td><td>+20%</td></tr><tr><th scope="row">Bazaar</th><td>2.869</td><td>15%</td><td>+23%</td></tr><tr><th scope="row">ΣΥΝ.ΚΑ</th><td>5.008</td><td>14%</td><td>+20%</td></tr><tr><th scope="row">ΑΒ Βασιλόπουλος</th><td>4.714</td><td>10%</td><td>+20%</td></tr></tbody></table></div>
-      <p class="note">Η επιβάρυνση είναι ο μέσος όρος των ποσοστιαίων διαφορών από τη χαμηλότερη τιμή, μόνο για προϊόντα σε ≥3 αλυσίδες. Δεν είναι διαφορά κόστους ενός σταθερού καλαθιού. Κάθε αλυσίδα έχει διαφορετικό δείγμα.</p></details>
-    </section>
-    <section id="categories" class="panel">
-      <p class="eyebrow">02 / ΚΑΤΗΓΟΡΙΕΣ</p><h2>Πού αξίζει<br>μια δεύτερη ματιά;</h2>
-      <p>Οι κατηγορίες με τη μεγαλύτερη μέση διαφορά ανάμεσα στη χαμηλότερη και την υψηλότερη τιμή του ίδιου προϊόντος.</p>
-      <figure><img class="chart" src="assets/categories.svg" alt="Οι δέκα κατηγορίες με τη μεγαλύτερη μέση ποσοστιαία διαφορά τιμής και τα αντίστοιχα δείγματα. Πού διαφέρουν περισσότερο οι τιμές; · 2026-09-20 · posokanei.gov.gr · Παγωτά · 69% · n=38 · Μπάρες Δημητριακών · 49% · n=42 · Πίτες και Πιτάκια · 46% · n=43 · Κάψουλες Εσπρέσσο · 42% · n=51 · Εντομοκτόνα, Εντομοαπωθητικά · 41% · n=114 · Θαλασσινά και Ψάρια · 39% · n=32 · Βαφές Μαλλιών · 38% · n=99 · Εσπρέσσο · 36% · n=43 · Σαμπουάν · 36% · n=100 · Παγωμένο Τσάι · 35% · n=39 · 0% · 100% · Μέση διαφορά (μέγιστη − ελάχιστη) / ελάχιστη τιμή. · ≥3 αλυσίδες ανά προϊόν · ≥30 προϊόντα ανά κατηγορία. · Με φίλτρο ακραίων τιμών · n = προϊόντα στο δείγμα." width="600" height="804" loading="lazy"><figcaption><a href="assets/categories.svg" download>Λήψη γραφήματος SVG ↗</a></figcaption></figure>
-      <p class="note">Ανά προϊόν: (υψηλότερη − χαμηλότερη) / χαμηλότερη τιμή. Κρατάμε κατηγορίες με τουλάχιστον 30 προϊόντα, μετά το φίλτρο ακραίων τιμών.</p>
-    </section>
+<main class="doc">
+  <div class="screen-only" style="position:fixed; right:18px; bottom:18px; z-index:50;">
+    <button onclick="window.print()" style="font-family:'Nunito',sans-serif; font-weight:800; font-size:14px; color:#fff; background:#14796A; border:none; border-radius:999px; padding:12px 20px; box-shadow:0 8px 20px rgba(21,160,107,.4); cursor:pointer;">⬇︎ Εκτύπωση / PDF</button>
   </div>
-  <section id="europe" class="europe panel">
-    <div><p class="eyebrow">03 / ΕΛΛΑΔΑ &amp; ΕΥΡΩΠΗ</p><h2>Το ίδιο προϊόν,<br>πέρα από τα σύνορα.</h2>
-    <p>Συγκρίνουμε τις διάμεσες τιμές ανά μονάδα στην Ελλάδα και στις άλλες ευρωπαϊκές χώρες του δείγματος. Κάθε προϊόν έχει τουλάχιστον δύο ελληνικές τιμές και παρουσία σε δύο άλλες χώρες.</p>
-    <p class="note">Οι συγκρίσεις αφορούν το διαθέσιμο δείγμα, όχι το συνολικό κόστος ζωής. «Παρόμοια» σημαίνει από −2% έως +2%.</p></div>
-    <figure><img class="chart" src="assets/europe.svg" alt="Ελλάδα και Ευρώπη: 53% φθηνότερα, 6% παρόμοια, 41% ακριβότερα. Δείγμα 698 προϊόντων. Ελλάδα &amp; Ευρώπη · 2026-09-20 · posokanei.gov.gr · −4% · διάμεση διαφορά τιμής στην Ελλάδα · Φθηνότερα στην Ελλάδα · 53% · 370 προϊόντα · Παρόμοια τιμή (±2%) · 6% · 42 προϊόντα · Ακριβότερα στην Ελλάδα · 41% · 286 προϊόντα · 698 προϊόντα · τιμές ανά κιλό, λίτρο ή τεμάχιο. · Διάμεσοι τιμών Ελλάδας / άλλων ευρωπαϊκών χωρών. · ≥2 ελληνικές τιμές και ≥2 άλλες χώρες ανά προϊόν. · Το δείγμα δεν είναι δείκτης κόστους ζωής." width="600" height="564" loading="lazy"><figcaption><a href="assets/europe.svg" download>Λήψη γραφήματος SVG ↗</a></figcaption></figure>
-    <div class="examples"><h3>Χαμηλότερες τιμές στην Ελλάδα</h3><ul><li><span>DOVE Αφρόλουτρο Men+Care Extra Fresh 400ml<small>Ελλάδα €5,22/L ·
-        αλλού €14,00/L</small></span><b>−63%</b></li><li><span>PALMOLIVE Aroma Essence Αφρόλουτρο Ultimate Relax 650ml<small>Ελλάδα €4,49/L ·
-        αλλού €11,37/L</small></span><b>−61%</b></li><li><span>ORAL-B Οδοντόκρεμα 1-2-3 Μέντα 75ml<small>Ελλάδα €16,80/L ·
-        αλλού €41,94/L</small></span><b>−60%</b></li></ul></div>
-    <div class="examples"><h3>Υψηλότερες τιμές στην Ελλάδα</h3><ul><li><span>BEN&#x27;S ORIGINAL Ρύζι Parboiled Έτοιμο σε 10 Λεπτά 8x125gr<small>Ελλάδα €5,46/kg ·
-        αλλού €2,79/kg</small></span><b>+96%</b></li><li><span>MAGIC RETOUCH No3 Καστανό 75ml<small>Ελλάδα €138,40/L ·
-        αλλού €75,20/L</small></span><b>+84%</b></li><li><span>MAGIC RETOUCH No2 Σκούρο Καστανό 75ml<small>Ελλάδα €138,40/L ·
-        αλλού €75,20/L</small></span><b>+84%</b></li></ul></div>
+
+  <!-- ============ HERO ============ -->
+  <header style="position:relative; overflow:hidden; background:#14796A; color:#FBF4E6; padding:46px 0.7in 38px;">
+    <div style="position:absolute; right:-60px; top:-60px; width:240px; height:240px; border-radius:50%; background:#178577;"></div>
+    <div style="position:absolute; right:70px; bottom:-90px; width:170px; height:170px; border-radius:50%; background:#E8A33C; opacity:.9;"></div>
+    <div style="position:relative;">
+      <div style="display:inline-flex; align-items:center; gap:8px; background:rgba(255,252,244,.16); border:1.5px solid rgba(255,252,244,.4); padding:6px 14px; border-radius:999px; font-family:'Nunito',sans-serif; font-weight:800; font-size:12.5px; letter-spacing:.04em;">🛒 ΚΑΘΗΜΕΡΙΝΗ ΕΡΕΥΝΑ ΤΙΜΩΝ · 21 ΣΕΠΤΕΜΒΡΙΟΥ 2026</div>
+      <h1 style="font-family:'Nunito',sans-serif; font-weight:900; font-size:46px; line-height:1.04; letter-spacing:-.01em; margin:18px 0 0; max-width:8.3in;">Τι κρύβουν οι τιμές<br>των σούπερ μάρκετ;</h1>
+      <p style="font-size:16px; line-height:1.55; max-width:5.6in; margin:16px 0 0; color:#FBEFE0;">Κάθε μέρα κατεβάζουμε ολόκληρο τον κατάλογο του Παρατηρητηρίου Τιμών και ψάχνουμε τις πιο ενδιαφέρουσες ιστορίες που κρύβονται στους αριθμούς. Να τι βρήκαμε σήμερα.</p>
+    </div>
+  </header>
+
+  <!-- stat strip -->
+  <div class="pad keep" style="display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:-22px; position:relative;">
+    <div style="background:#FBF4E6; border:2px solid #DECFB0; border-radius:16px; padding:16px 14px; box-shadow:0 8px 20px rgba(30,40,30,.06);">
+      <div style="font-family:'Nunito',sans-serif; font-weight:900; font-size:28px; color:#14796A; line-height:1;">10.438</div>
+      <div style="font-size:12.5px; font-weight:700; color:#6B7370; margin-top:5px;">προϊόντα στον κατάλογο</div>
+    </div>
+    <div style="background:#FBF4E6; border:2px solid #DECFB0; border-radius:16px; padding:16px 14px; box-shadow:0 8px 20px rgba(30,40,30,.06);">
+      <div style="font-family:'Nunito',sans-serif; font-weight:900; font-size:28px; color:#E2542C; line-height:1;">11</div>
+      <div style="font-size:12.5px; font-weight:700; color:#6B7370; margin-top:5px;">ελληνικά σούπερ μάρκετ</div>
+    </div>
+    <div style="background:#FBF4E6; border:2px solid #DECFB0; border-radius:16px; padding:16px 14px; box-shadow:0 8px 20px rgba(30,40,30,.06);">
+      <div style="font-family:'Nunito',sans-serif; font-weight:900; font-size:28px; color:#B06A1F; line-height:1;">6.952</div>
+      <div style="font-size:12.5px; font-weight:700; color:#6B7370; margin-top:5px;">προϊόντα σε ≥2 αλυσίδες</div>
+    </div>
+    <div style="background:#FBF4E6; border:2px solid #DECFB0; border-radius:16px; padding:16px 14px; box-shadow:0 8px 20px rgba(30,40,30,.06);">
+      <div style="font-family:'Nunito',sans-serif; font-weight:900; font-size:28px; color:#7A4E8C; line-height:1;">696</div>
+      <div style="font-size:12.5px; font-weight:700; color:#6B7370; margin-top:5px;">συγκρίσιμα με Ευρώπη</div>
+    </div>
+  </div>
+  <p class="pad" style="font-size:11.5px; color:#9A9384; margin:14px 0 0; font-style:italic;">Πηγή δεδομένων: <a href="https://posokanei.gov.gr" style="color:#7C8077; font-weight:700;">Παρατηρητήριο Τιμών</a>. Οι συγκρίσεις αφορούν μόνο ελληνικές αλυσίδες και έχουν καθαριστεί από λάθη του Παρατηρητηρίου (τιμές μονάδας λανθασμένα συνδεδεμένες με πολυσυσκευασίες).</p>
+
+  <!-- ============ SECTION 1 — CHEAPEST RANKING ============ -->
+  <section class="pad" style="margin-top:40px;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="font-family:'Nunito',sans-serif; font-weight:900; font-size:13px; color:#fff; background:#14796A; border-radius:8px; padding:4px 10px;">01</span>
+      <span style="font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#14796A; letter-spacing:.04em;">ΠΟΙΟ ΕΙΝΑΙ ΤΟ ΦΘΗΝΟΤΕΡΟ;</span>
+    </div>
+    <h2 style="font-family:'Nunito',sans-serif; font-weight:900; font-size:30px; line-height:1.08; margin:10px 0 0; max-width:6.6in;">Πιο συχνά φθηνότερο βγαίνει το <span style="color:#14796A;">Market In</span></h2>
+    <p style="font-size:15px; line-height:1.6; color:#454B48; max-width:6.4in; margin:10px 0 0;">Συγκρίναμε <b>6.952</b> προϊόντα που πωλούνται σε τουλάχιστον δύο ελληνικές αλυσίδες. Το Market In έχει την καλύτερη τιμή στο <b>46%</b> των περιπτώσεων. Στο άλλο άκρο, το ΑΒ Βασιλόπουλος σπανιότερα βγαίνει το φθηνότερο: αν αγόραζες όλο το καλάθι εκεί θα πλήρωνες κατά μέσο όρο <b>+20%</b> σε σχέση με το να έπαιρνες κάθε προϊόν εκεί που είναι φθηνότερο.</p>
+
+    <figure class="keep" style="margin:22px 0 0; background:#FBF4E6; border:2px solid #DECFB0; border-radius:18px; padding:20px 22px;">
+      <div style="display:flex; justify-content:space-between; font-family:'Nunito',sans-serif; font-weight:800; font-size:11.5px; color:#8A8472; letter-spacing:.03em; margin-bottom:14px;">
+        <span>ΣΟΥΠΕΡ ΜΑΡΚΕΤ · ΦΟΡΕΣ ΦΘΗΝΟΤΕΡΟ</span><span>ΜΕΣΗ ΕΠΙΒΑΡΥΝΣΗ</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:11px;">
+        <div style="display:flex; align-items:center; gap:12px;"><div style="width:118px; flex:none; font-weight:800; font-size:13.5px; display:flex; align-items:center; gap:6px;"><span>🥇</span>Market In</div><div style="flex:1; background:#E6DDC6; border-radius:999px; height:24px; position:relative;"><div style="width:100.0%; height:100%; background:linear-gradient(90deg,#14796A,#1C9384); border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#fff; font-size:13px;">46%</span></div></div><div style="width:54px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#14796A;">+7%</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:118px; flex:none; font-weight:700; font-size:13.5px; display:flex; align-items:center; gap:6px;">Lidl</div><div style="flex:1; background:#E6DDC6; border-radius:999px; height:24px; position:relative;"><div style="width:93.5%; height:100%; background:#3C9285; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#fff; font-size:13px;">43%</span></div></div><div style="width:54px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#7C8077;">+12%</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:118px; flex:none; font-weight:700; font-size:13.5px; display:flex; align-items:center; gap:6px;">Χαλκιαδάκης</div><div style="flex:1; background:#E6DDC6; border-radius:999px; height:24px; position:relative;"><div style="width:89.1%; height:100%; background:#5CA89B; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#fff; font-size:13px;">41%</span></div></div><div style="width:54px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#7C8077;">+11%</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:118px; flex:none; font-weight:700; font-size:13.5px; display:flex; align-items:center; gap:6px;">Σκλαβενίτης</div><div style="flex:1; background:#E6DDC6; border-radius:999px; height:24px; position:relative;"><div style="width:89.1%; height:100%; background:#82B6AB; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#fff; font-size:13px;">41%</span></div></div><div style="width:54px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#7C8077;">+10%</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:118px; flex:none; font-weight:700; font-size:13.5px; display:flex; align-items:center; gap:6px;">Μασούτης</div><div style="flex:1; background:#E6DDC6; border-radius:999px; height:24px; position:relative;"><div style="width:54.3%; height:100%; background:#82B6AB; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#fff; font-size:13px;">25%</span></div></div><div style="width:54px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#7C8077;">+21%</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:118px; flex:none; font-weight:700; font-size:13.5px; display:flex; align-items:center; gap:6px;">Γαλαξίας</div><div style="flex:1; background:#E6DDC6; border-radius:999px; height:24px; position:relative;"><div style="width:54.3%; height:100%; background:#A6C7BE; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#224A41; font-size:13px;">25%</span></div></div><div style="width:54px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#7C8077;">+18%</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:118px; flex:none; font-weight:700; font-size:13.5px; display:flex; align-items:center; gap:6px;">My Market</div><div style="flex:1; background:#E6DDC6; border-radius:999px; height:24px; position:relative;"><div style="width:50.0%; height:100%; background:#A6C7BE; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#224A41; font-size:13px;">23%</span></div></div><div style="width:54px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#7C8077;">+16%</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:118px; flex:none; font-weight:700; font-size:13.5px; display:flex; align-items:center; gap:6px;">Κρητικός</div><div style="flex:1; background:#E6DDC6; border-radius:999px; height:24px; position:relative;"><div style="width:37.0%; height:100%; background:#C2D6CF; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#224A41; font-size:13px;">17%</span></div></div><div style="width:54px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#7C8077;">+20%</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:118px; flex:none; font-weight:700; font-size:13.5px; display:flex; align-items:center; gap:6px;">Bazaar</div><div style="flex:1; background:#E6DDC6; border-radius:999px; height:24px; position:relative;"><div style="width:32.6%; height:100%; background:#C2D6CF; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#224A41; font-size:13px;">15%</span></div></div><div style="width:54px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#7C8077;">+22%</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:118px; flex:none; font-weight:700; font-size:13.5px; display:flex; align-items:center; gap:6px;">ΣΥΝ.ΚΑ</div><div style="flex:1; background:#E6DDC6; border-radius:999px; height:24px; position:relative;"><div style="width:30.4%; height:100%; background:#E2542C; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#fff; font-size:13px;">14%</span></div></div><div style="width:54px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#7C8077;">+20%</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:118px; flex:none; font-weight:700; font-size:13.5px; display:flex; align-items:center; gap:6px;">ΑΒ Βασιλόπουλος</div><div style="flex:1; background:#E6DDC6; border-radius:999px; height:24px; position:relative;"><div style="width:21.7%; height:100%; background:#E2542C; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#fff; font-size:13px;">10%</span></div></div><div style="width:54px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#E2542C;">+20%</div></div>
+      </div>
+      <figcaption style="font-size:11.5px; color:#9A9384; margin-top:14px;">«Φορές φθηνότερο» = ποσοστό προϊόντων όπου η αλυσίδα έχει τη χαμηλότερη τιμή. «Μέση επιβάρυνση» = πόσο παραπάνω πληρώνεις κατά μέσο όρο σε σχέση με το φθηνότερο. Κάθε αλυσίδα μετριέται μόνο στα προϊόντα που πράγματι διαθέτει.</figcaption>
+    </figure>
   </section>
-  <section id="price-gaps" class="panel spread-panel">
-    <div class="section-heading"><div><p class="eyebrow">04 / ΙΔΙΟ ΠΡΟΪΟΝ, ΑΛΛΗ ΤΙΜΗ</p><h2>Μικρή σύγκριση.<br>Μεγάλη διαφορά.</h2></div><p>Οι μεγαλύτερες διαφορές σε προϊόντα με τιμές από τουλάχιστον τέσσερις ελληνικές αλυσίδες, μετά το φίλτρο ακραίων τιμών.</p></div>
-    <p class="note">Τα σημεία δείχνουν τη χαμηλότερη και την υψηλότερη τιμή. Κοινή κλίμακα από €0 για όλα τα προϊόντα.</p>
-    <article class="spread-row">
-          <div class="spread-title"><h3>ΜΠΑΡΜΠΑ ΣΤΑΘΗΣ Αρακάς Βιολογικός 450g</h3>
-          <strong>€2,66<small>διαφορά · +190%</small></strong></div>
-          <div class="price-line" aria-hidden="true"><span style="left:27.03%;width:51.35%"></span>
-          <i style="left:27.03%"></i><i class="high" style="left:78.38%"></i></div>
-          <div class="price-labels"><span><b>€1,40</b> Σκλαβενίτης</span>
-          <span><b>€4,06</b> Bazaar</span></div></article><article class="spread-row">
-          <div class="spread-title"><h3>MERENDA Πραλίνα Φουντουκιού 570g</h3>
-          <strong>€3,19<small>διαφορά · +160%</small></strong></div>
-          <div class="price-line" aria-hidden="true"><span style="left:38.42%;width:61.58%"></span>
-          <i style="left:38.42%"></i><i class="high" style="left:100.00%"></i></div>
-          <div class="price-labels"><span><b>€1,99</b> Μασούτης</span>
-          <span><b>€5,18</b> Χαλκιαδάκης</span></div></article><article class="spread-row">
-          <div class="spread-title"><h3>NATURE VALLEY Μπάρες Δημητριακών Crunchy Dipped Salted Caramel 8x20g</h3>
-          <strong>€2,38<small>διαφορά · +150%</small></strong></div>
-          <div class="price-line" aria-hidden="true"><span style="left:30.69%;width:45.95%"></span>
-          <i style="left:30.69%"></i><i class="high" style="left:76.64%"></i></div>
-          <div class="price-labels"><span><b>€1,59</b> Χαλκιαδάκης</span>
-          <span><b>€3,97</b> Μασούτης</span></div></article><article class="spread-row">
-          <div class="spread-title"><h3>NATURE VALLEY Μπάρες Δημητριακών Crunchy Dipped Milk Chocolate 8x20g</h3>
-          <strong>€2,38<small>διαφορά · +150%</small></strong></div>
-          <div class="price-line" aria-hidden="true"><span style="left:30.69%;width:45.95%"></span>
-          <i style="left:30.69%"></i><i class="high" style="left:76.64%"></i></div>
-          <div class="price-labels"><span><b>€1,59</b> Χαλκιαδάκης</span>
-          <span><b>€3,97</b> My Market</span></div></article><article class="spread-row">
-          <div class="spread-title"><h3>NATURE VALLEY Crunchy Μπάρες Δημητριακών με Βρώμη &amp; Μαύρη Σοκολάτα 5x42g</h3>
-          <strong>€2,24<small>διαφορά · +149%</small></strong></div>
-          <div class="price-line" aria-hidden="true"><span style="left:28.96%;width:43.24%"></span>
-          <i style="left:28.96%"></i><i class="high" style="left:72.20%"></i></div>
-          <div class="price-labels"><span><b>€1,50</b> Χαλκιαδάκης</span>
-          <span><b>€3,74</b> My Market</span></div></article>
+
+  <!-- ============ SECTION 2 — SHOP AROUND ============ -->
+  <section class="pad" style="margin-top:44px;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="font-family:'Nunito',sans-serif; font-weight:900; font-size:13px; color:#fff; background:#E2542C; border-radius:8px; padding:4px 10px;">02</span>
+      <span style="font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#E2542C; letter-spacing:.04em;">ΠΟΥ ΑΞΙΖΕΙ ΝΑ ΨΑΞΕΙΣ</span>
+    </div>
+    <h2 style="font-family:'Nunito',sans-serif; font-weight:900; font-size:30px; line-height:1.08; margin:10px 0 0; max-width:6.6in;">Μεγαλύτερη διαφορά τιμής: «<span style="color:#E2542C;">Παγωτά</span>»</h2>
+    <p style="font-size:15px; line-height:1.6; color:#454B48; max-width:6.4in; margin:10px 0 0;">Σε κάποιες κατηγορίες η τιμή για το ίδιο πράγμα αλλάζει δραματικά από μαγαζί σε μαγαζί. Πρωταθλητής η κατηγορία «Παγωτά», όπου η μέση διαφορά τιμής μεταξύ καταστημάτων αγγίζει το <b>69%</b>.</p>
+
+    <figure class="keep" style="margin:22px 0 0; background:#FBF4E6; border:2px solid #DECFB0; border-radius:18px; padding:20px 22px;">
+      <div style="display:flex; justify-content:space-between; font-family:'Nunito',sans-serif; font-weight:800; font-size:11.5px; color:#8A8472; letter-spacing:.03em; margin-bottom:14px;">
+        <span>ΚΑΤΗΓΟΡΙΑ · ΜΕΣΗ ΔΙΑΦΟΡΑ ΜΕΤΑΞΥ ΜΑΓΑΖΙΩΝ</span><span>ΠΡΟΪΟΝΤΑ</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:11px;">
+        <div style="display:flex; align-items:center; gap:12px;"><div style="width:150px; flex:none; font-weight:800; font-size:13.5px;">🍦 Παγωτά</div><div style="flex:1; background:#F0E2D4; border-radius:999px; height:24px;"><div style="width:100.0%; height:100%; background:linear-gradient(90deg,#E2542C,#E8772E); border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#fff; font-size:13px;">69%</span></div></div><div style="width:44px; flex:none; text-align:right; font-weight:800; font-size:13px; color:#8A8472;">38</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:150px; flex:none; font-weight:700; font-size:13.5px;">🥧 Πίτες και Πιτάκια</div><div style="flex:1; background:#F0E2D4; border-radius:999px; height:24px;"><div style="width:69.6%; height:100%; background:#E56A33; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#fff; font-size:13px;">48%</span></div></div><div style="width:44px; flex:none; text-align:right; font-weight:800; font-size:13px; color:#8A8472;">45</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:150px; flex:none; font-weight:700; font-size:13.5px;">🥣 Μπάρες Δημητριακών</div><div style="flex:1; background:#F0E2D4; border-radius:999px; height:24px;"><div style="width:63.8%; height:100%; background:#E8772E; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#fff; font-size:13px;">44%</span></div></div><div style="width:44px; flex:none; text-align:right; font-weight:800; font-size:13px; color:#8A8472;">41</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:150px; flex:none; font-weight:700; font-size:13.5px;">☕ Κάψουλες Εσπρέσσο</div><div style="flex:1; background:#F0E2D4; border-radius:999px; height:24px;"><div style="width:62.3%; height:100%; background:#ED8B2C; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#fff; font-size:13px;">43%</span></div></div><div style="width:44px; flex:none; text-align:right; font-weight:800; font-size:13px; color:#8A8472;">52</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:150px; flex:none; font-weight:700; font-size:13.5px;">Εντομοκτόνα, Εντομοαπωθητικά</div><div style="flex:1; background:#F0E2D4; border-radius:999px; height:24px;"><div style="width:59.4%; height:100%; background:#ED8B2C; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#fff; font-size:13px;">41%</span></div></div><div style="width:44px; flex:none; text-align:right; font-weight:800; font-size:13px; color:#8A8472;">114</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:150px; flex:none; font-weight:700; font-size:13.5px;">Θαλασσινά και Ψάρια</div><div style="flex:1; background:#F0E2D4; border-radius:999px; height:24px;"><div style="width:56.5%; height:100%; background:#EBA22A; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#6B3410; font-size:13px;">39%</span></div></div><div style="width:44px; flex:none; text-align:right; font-weight:800; font-size:13px; color:#8A8472;">32</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:150px; flex:none; font-weight:700; font-size:13.5px;">💈 Βαφές Μαλλιών</div><div style="flex:1; background:#F0E2D4; border-radius:999px; height:24px;"><div style="width:55.1%; height:100%; background:#EBA22A; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#6B3410; font-size:13px;">38%</span></div></div><div style="width:44px; flex:none; text-align:right; font-weight:800; font-size:13px; color:#8A8472;">99</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:150px; flex:none; font-weight:700; font-size:13.5px;">Σαμπουάν </div><div style="flex:1; background:#F0E2D4; border-radius:999px; height:24px;"><div style="width:52.2%; height:100%; background:#EBA22A; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#6B3410; font-size:13px;">36%</span></div></div><div style="width:44px; flex:none; text-align:right; font-weight:800; font-size:13px; color:#8A8472;">100</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:150px; flex:none; font-weight:700; font-size:13.5px;">🌭 Μουστάρδα</div><div style="flex:1; background:#F0E2D4; border-radius:999px; height:24px;"><div style="width:50.7%; height:100%; background:#EDB257; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#6B3410; font-size:13px;">35%</span></div></div><div style="width:44px; flex:none; text-align:right; font-weight:800; font-size:13px; color:#8A8472;">30</div></div>
+<div style="display:flex; align-items:center; gap:12px;"><div style="width:150px; flex:none; font-weight:700; font-size:13.5px;">Παγωμένο Τσάι</div><div style="flex:1; background:#F0E2D4; border-radius:999px; height:24px;"><div style="width:49.3%; height:100%; background:#EDB257; border-radius:999px; display:flex; align-items:center; padding-left:12px;"><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#6B3410; font-size:13px;">34%</span></div></div><div style="width:44px; flex:none; text-align:right; font-weight:800; font-size:13px; color:#8A8472;">40</div></div>
+      </div>
+    </figure>
   </section>
-  <section id="private-label" class="panel">
-    <div class="section-heading"><div><p class="eyebrow">05 / ΙΔΙΩΤΙΚΗ ΕΤΙΚΕΤΑ</p><h2>Η ετικέτα αλλάζει.<br>Η τιμή επίσης.</h2></div><p>Συγκρίνουμε διάμεσες τιμές ανά μονάδα, μέσα στην ίδια κατηγορία. Πρόκειται για διαφορετικά προϊόντα, όχι για ισοδύναμες επιλογές ή εγγυημένη οικονομία.</p></div>
-    <div class="table-scroll" tabindex="0" role="region" aria-label="Σύγκριση ιδιωτικής ετικέτας"><table><thead><tr><th>Κατηγορία / μονάδα</th><th>Ιδιωτική ετικέτα</th><th>Επώνυμα</th><th>Διαφορά</th></tr></thead><tbody><tr><th scope="row">Ζελέ, Κερί, Πηλός<small>ανά L</small></th>
-        <td><span class="mobile-label" aria-hidden="true">Ιδιωτική ετικέτα</span>€7,18</td>
-        <td><span class="mobile-label" aria-hidden="true">Επώνυμα</span>€28,80</td>
-        <td class="accent"><span class="mobile-label" aria-hidden="true">Διαφορά</span>−75%</td></tr><tr><th scope="row">Ροζέ Κρασιά<small>ανά L</small></th>
-        <td><span class="mobile-label" aria-hidden="true">Ιδιωτική ετικέτα</span>€2,17</td>
-        <td><span class="mobile-label" aria-hidden="true">Επώνυμα</span>€8,21</td>
-        <td class="accent"><span class="mobile-label" aria-hidden="true">Διαφορά</span>−74%</td></tr><tr><th scope="row">Υγρή Τροφή για Σκύλους<small>ανά kg</small></th>
-        <td><span class="mobile-label" aria-hidden="true">Ιδιωτική ετικέτα</span>€1,72</td>
-        <td><span class="mobile-label" aria-hidden="true">Επώνυμα</span>€6,46</td>
-        <td class="accent"><span class="mobile-label" aria-hidden="true">Διαφορά</span>−73%</td></tr><tr><th scope="row">Ξηρά Τροφή για Σκύλους<small>ανά kg</small></th>
-        <td><span class="mobile-label" aria-hidden="true">Ιδιωτική ετικέτα</span>€1,30</td>
-        <td><span class="mobile-label" aria-hidden="true">Επώνυμα</span>€3,79</td>
-        <td class="accent"><span class="mobile-label" aria-hidden="true">Διαφορά</span>−66%</td></tr><tr><th scope="row">Μπισκότα Γεμιστά, Διάφορες Γεύσεις<small>ανά kg</small></th>
-        <td><span class="mobile-label" aria-hidden="true">Ιδιωτική ετικέτα</span>€3,30</td>
-        <td><span class="mobile-label" aria-hidden="true">Επώνυμα</span>€9,55</td>
-        <td class="accent"><span class="mobile-label" aria-hidden="true">Διαφορά</span>−65%</td></tr><tr><th scope="row">Κόλα<small>ανά L</small></th>
-        <td><span class="mobile-label" aria-hidden="true">Ιδιωτική ετικέτα</span>€0,66</td>
-        <td><span class="mobile-label" aria-hidden="true">Επώνυμα</span>€1,81</td>
-        <td class="accent"><span class="mobile-label" aria-hidden="true">Διαφορά</span>−64%</td></tr><tr><th scope="row">Ξηρά Τροφή για Γάτες<small>ανά kg</small></th>
-        <td><span class="mobile-label" aria-hidden="true">Ιδιωτική ετικέτα</span>€2,04</td>
-        <td><span class="mobile-label" aria-hidden="true">Επώνυμα</span>€5,60</td>
-        <td class="accent"><span class="mobile-label" aria-hidden="true">Διαφορά</span>−64%</td></tr><tr><th scope="row">Χαλβάς<small>ανά kg</small></th>
-        <td><span class="mobile-label" aria-hidden="true">Ιδιωτική ετικέτα</span>€6,00</td>
-        <td><span class="mobile-label" aria-hidden="true">Επώνυμα</span>€16,31</td>
-        <td class="accent"><span class="mobile-label" aria-hidden="true">Διαφορά</span>−63%</td></tr><tr><th scope="row">Μουστάρδα<small>ανά kg</small></th>
-        <td><span class="mobile-label" aria-hidden="true">Ιδιωτική ετικέτα</span>€2,94</td>
-        <td><span class="mobile-label" aria-hidden="true">Επώνυμα</span>€7,39</td>
-        <td class="accent"><span class="mobile-label" aria-hidden="true">Διαφορά</span>−60%</td></tr><tr><th scope="row">Μακρύκοκο Ρύζι<small>ανά kg</small></th>
-        <td><span class="mobile-label" aria-hidden="true">Ιδιωτική ετικέτα</span>€1,67</td>
-        <td><span class="mobile-label" aria-hidden="true">Επώνυμα</span>€4,10</td>
-        <td class="accent"><span class="mobile-label" aria-hidden="true">Διαφορά</span>−59%</td></tr></tbody></table></div>
-    <p class="note">Διάμεσοι τιμών προϊόντων ανά κατηγορία και μονάδα: τουλάχιστον 5 προϊόντα ιδιωτικής ετικέτας και 15 επώνυμα. Διαφορά = (ιδιωτική ετικέτα − επώνυμα) / επώνυμα.</p>
+
+  <!-- ============ SECTION 3 — GREECE vs EUROPE ============ -->
+  <section class="pad" style="margin-top:44px;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="font-family:'Nunito',sans-serif; font-weight:900; font-size:13px; color:#fff; background:#7A4E8C; border-radius:8px; padding:4px 10px;">03</span>
+      <span style="font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#7A4E8C; letter-spacing:.04em;">🇬🇷 ΕΛΛΑΔΑ vs ΕΥΡΩΠΗ 🇪🇺</span>
+    </div>
+    <h2 style="font-family:'Nunito',sans-serif; font-weight:900; font-size:30px; line-height:1.08; margin:10px 0 0; max-width:6.6in;">Η Ελλάδα βγαίνει <span style="color:#14796A;">ελαφρώς φθηνότερη</span> — με μεγάλες ακρότητες</h2>
+    <p style="font-size:15px; line-height:1.6; color:#454B48; max-width:6.5in; margin:10px 0 0;">Συγκρίναμε <b>696</b> προϊόντα που πωλούνται και στην Ελλάδα και σε τουλάχιστον δύο άλλες ευρωπαϊκές χώρες, <b>ανά μονάδα</b> (κιλό ή λίτρο). Η διάμεση διαφορά είναι <b>−4%</b>: λίγο φθηνότερα εδώ. Όμως οι ακρότητες είναι έντονες.</p>
+
+    <figure class="keep" style="margin:20px 0 0; background:#FBF4E6; border:2px solid #DECFB0; border-radius:18px; padding:20px 22px;">
+      <div style="display:flex; height:46px; border-radius:12px; overflow:hidden; font-family:'Nunito',sans-serif; font-weight:900; color:#fff;">
+        <div style="width:52%; background:#14796A; display:flex; align-items:center; justify-content:center; font-size:15px;">52%</div>
+        <div style="width:5%; background:#C9B894; display:flex; align-items:center; justify-content:center; font-size:11px; color:#5C4A2E;">5%</div>
+        <div style="width:42%; background:#E2542C; display:flex; align-items:center; justify-content:center; font-size:15px;">42%</div>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-top:10px; font-size:12.5px; font-weight:700;">
+        <span style="color:#14796A;">◄ Φθηνότερα στην Ελλάδα (364)</span>
+        <span style="color:#8A7A56;">ίδια (37)</span>
+        <span style="color:#E2542C;">Ακριβότερα στην Ελλάδα (295) ►</span>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:18px;">
+        <div style="background:#E2F0EA; border-radius:12px; padding:14px 16px;">
+          <div style="font-family:'Nunito',sans-serif; font-weight:900; font-size:24px; color:#14796A; line-height:1;">212 <span style="font-size:14px;">προϊόντα · 30%</span></div>
+          <div style="font-size:12.5px; font-weight:700; color:#2E5C52; margin-top:5px;">πάνω από 20% φθηνότερα εδώ</div>
+        </div>
+        <div style="background:#F6E7DF; border-radius:12px; padding:14px 16px;">
+          <div style="font-family:'Nunito',sans-serif; font-weight:900; font-size:24px; color:#E2542C; line-height:1;">137 <span style="font-size:14px;">προϊόντα · 20%</span></div>
+          <div style="font-size:12.5px; font-weight:700; color:#9C3415; margin-top:5px;">πάνω από 20% ακριβότερα εδώ</div>
+        </div>
+      </div>
+    </figure>
+
+    <div class="keep" style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;">
+      <div>
+        <h3 style="font-family:'Nunito',sans-serif; font-weight:900; font-size:15px; color:#14796A; margin-bottom:10px;">💚 Πολύ φθηνότερα στην Ελλάδα</h3>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="background:#FBF4E6; border:1.5px solid #DECFB0; border-radius:12px; padding:10px 12px;"><div style="font-size:12px; font-weight:700; line-height:1.3;">DOVE Αφρόλουτρο Men+Care Extra Fresh 400ml</div><div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; font-size:11.5px;"><span style="color:#7C8077;">€5,22/L <span style="color:#BBB3A1;">vs</span> €14,00/L</span><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#14796A;">−63%</span></div></div>
+<div style="background:#FBF4E6; border:1.5px solid #DECFB0; border-radius:12px; padding:10px 12px;"><div style="font-size:12px; font-weight:700; line-height:1.3;">PALMOLIVE Aroma Essence Αφρόλουτρο Ultimate Relax 650ml</div><div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; font-size:11.5px;"><span style="color:#7C8077;">€4,49/L <span style="color:#BBB3A1;">vs</span> €11,37/L</span><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#14796A;">−61%</span></div></div>
+<div style="background:#FBF4E6; border:1.5px solid #DECFB0; border-radius:12px; padding:10px 12px;"><div style="font-size:12px; font-weight:700; line-height:1.3;">ORAL-B Οδοντόκρεμα 1-2-3 Μέντα 75ml</div><div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; font-size:11.5px;"><span style="color:#7C8077;">€16,80/L <span style="color:#BBB3A1;">vs</span> €41,94/L</span><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#14796A;">−60%</span></div></div>
+<div style="background:#FBF4E6; border:1.5px solid #DECFB0; border-radius:12px; padding:10px 12px;"><div style="font-size:12px; font-weight:700; line-height:1.3;">ORAL-B Οδοντόκρεμα 3D White Luxe Perfection 75ml</div><div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; font-size:11.5px;"><span style="color:#7C8077;">€29,94/L <span style="color:#BBB3A1;">vs</span> €72,13/L</span><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#14796A;">−58%</span></div></div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-family:'Nunito',sans-serif; font-weight:900; font-size:15px; color:#E2542C; margin-bottom:10px;">❤️ Πολύ ακριβότερα στην Ελλάδα</h3>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="background:#FBF4E6; border:1.5px solid #DECFB0; border-radius:12px; padding:10px 12px;"><div style="font-size:12px; font-weight:700; line-height:1.3;">BEN&#x27;S ORIGINAL Ρύζι Parboiled Έτοιμο σε 10 Λεπτά 8x125gr</div><div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; font-size:11.5px;"><span style="color:#7C8077;">€5,46/kg <span style="color:#BBB3A1;">vs</span> €2,79/kg</span><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#E2542C;">+96%</span></div></div>
+<div style="background:#FBF4E6; border:1.5px solid #DECFB0; border-radius:12px; padding:10px 12px;"><div style="font-size:12px; font-weight:700; line-height:1.3;">MAGIC RETOUCH No3 Καστανό 75ml</div><div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; font-size:11.5px;"><span style="color:#7C8077;">€138,40/L <span style="color:#BBB3A1;">vs</span> €75,20/L</span><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#E2542C;">+84%</span></div></div>
+<div style="background:#FBF4E6; border:1.5px solid #DECFB0; border-radius:12px; padding:10px 12px;"><div style="font-size:12px; font-weight:700; line-height:1.3;">MAGIC RETOUCH No2 Σκούρο Καστανό 75ml</div><div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; font-size:11.5px;"><span style="color:#7C8077;">€138,40/L <span style="color:#BBB3A1;">vs</span> €75,20/L</span><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#E2542C;">+84%</span></div></div>
+<div style="background:#FBF4E6; border:1.5px solid #DECFB0; border-radius:12px; padding:10px 12px;"><div style="font-size:12px; font-weight:700; line-height:1.3;">L&#x27;OREAL Men Expert Αποσμητικό Roll On Carbon Protect 5in1 50ml</div><div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; font-size:11.5px;"><span style="color:#7C8077;">€110,60/L <span style="color:#BBB3A1;">vs</span> €60,40/L</span><span style="font-family:'Nunito',sans-serif; font-weight:900; color:#E2542C;">+83%</span></div></div>
+        </div>
+      </div>
+    </div>
   </section>
+
+  <!-- ============ SECTION 4 — SAME PRODUCT SPREAD ============ -->
+  <section class="pad" style="margin-top:44px;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="font-family:'Nunito',sans-serif; font-weight:900; font-size:13px; color:#fff; background:#B06A1F; border-radius:8px; padding:4px 10px;">04</span>
+      <span style="font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#8A5114; letter-spacing:.04em;">ΙΔΙΟ ΠΡΟΪΟΝ, ΑΛΛΗ ΤΙΜΗ</span>
+    </div>
+    <h2 style="font-family:'Nunito',sans-serif; font-weight:900; font-size:30px; line-height:1.08; margin:10px 0 0; max-width:6.6in;">Το ίδιο προϊόν, έως και <span style="color:#E2542C;">2,9 φορές</span> πιο ακριβό</h2>
+    <p style="font-size:15px; line-height:1.6; color:#454B48; max-width:6.5in; margin:10px 0 0;">Πρωταθλητής σήμερα: ΜΠΑΡΜΠΑ ΣΤΑΘΗΣ Αρακάς Βιολογικός 450g — <b>€1,40</b> στο Σκλαβενίτης, <b>€4,06</b> στο Bazaar — διαφορά <b>+190%</b> για πανομοιότυπο προϊόν.</p>
+
+    <div class="keep" style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
+      <div style="background:#FBF4E6; border:2px solid #DECFB0; border-radius:14px; padding:13px 16px;"><div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><div style="font-size:13px; font-weight:700; line-height:1.25;">ΜΠΑΡΜΠΑ ΣΤΑΘΗΣ Αρακάς Βιολογικός 450g</div><div style="font-family:'Nunito',sans-serif; font-weight:900; font-size:16px; color:#E2542C; flex:none;">+190%</div></div><div style="display:flex; align-items:center; gap:0; margin-top:9px; height:18px; border-radius:999px; overflow:hidden; background:#F3E6DC;"><div style="width:34.5%; height:100%; background:#14796A;"></div></div><div style="display:flex; justify-content:space-between; margin-top:6px; font-size:11.5px; font-weight:700;"><span style="color:#14796A;">€1,40 · Σκλαβενίτης</span><span style="color:#E2542C;">€4,06 · Bazaar</span></div></div>
+<div style="background:#FBF4E6; border:2px solid #DECFB0; border-radius:14px; padding:13px 16px;"><div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><div style="font-size:13px; font-weight:700; line-height:1.25;">NATURE VALLEY Crunchy Μπάρες Δημητριακών με Βρώμη &amp; Μαύρη Σοκολάτα 5x42g</div><div style="font-family:'Nunito',sans-serif; font-weight:900; font-size:16px; color:#E2542C; flex:none;">+149%</div></div><div style="display:flex; align-items:center; gap:0; margin-top:9px; height:18px; border-radius:999px; overflow:hidden; background:#F3E6DC;"><div style="width:40.1%; height:100%; background:#14796A;"></div></div><div style="display:flex; justify-content:space-between; margin-top:6px; font-size:11.5px; font-weight:700;"><span style="color:#14796A;">€1,50 · Χαλκιαδάκης</span><span style="color:#E2542C;">€3,74 · Γαλαξίας</span></div></div>
+<div style="background:#FBF4E6; border:2px solid #DECFB0; border-radius:14px; padding:13px 16px;"><div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><div style="font-size:13px; font-weight:700; line-height:1.25;">NATURE VALLEY Crunchy Μπάρες Δημητριακών με Βρώμη &amp; Μέλι 5x42g</div><div style="font-family:'Nunito',sans-serif; font-weight:900; font-size:16px; color:#E2542C; flex:none;">+149%</div></div><div style="display:flex; align-items:center; gap:0; margin-top:9px; height:18px; border-radius:999px; overflow:hidden; background:#F3E6DC;"><div style="width:40.1%; height:100%; background:#14796A;"></div></div><div style="display:flex; justify-content:space-between; margin-top:6px; font-size:11.5px; font-weight:700;"><span style="color:#14796A;">€1,50 · Χαλκιαδάκης</span><span style="color:#E2542C;">€3,74 · Γαλαξίας</span></div></div>
+<div style="background:#FBF4E6; border:2px solid #DECFB0; border-radius:14px; padding:13px 16px;"><div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><div style="font-size:13px; font-weight:700; line-height:1.25;">NATURE VALLEY Crunchy Μπάρες Δημητριακών Chocolate Chip 5x42g</div><div style="font-family:'Nunito',sans-serif; font-weight:900; font-size:16px; color:#E2542C; flex:none;">+149%</div></div><div style="display:flex; align-items:center; gap:0; margin-top:9px; height:18px; border-radius:999px; overflow:hidden; background:#F3E6DC;"><div style="width:40.1%; height:100%; background:#14796A;"></div></div><div style="display:flex; justify-content:space-between; margin-top:6px; font-size:11.5px; font-weight:700;"><span style="color:#14796A;">€1,50 · Χαλκιαδάκης</span><span style="color:#E2542C;">€3,74 · Σκλαβενίτης</span></div></div>
+<div style="background:#FBF4E6; border:2px solid #DECFB0; border-radius:14px; padding:13px 16px;"><div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><div style="font-size:13px; font-weight:700; line-height:1.25;">ΜΠΑΡΜΠΑ ΣΤΑΘΗΣ Σπανάκι Φύλλα 1kg</div><div style="font-family:'Nunito',sans-serif; font-weight:900; font-size:16px; color:#E2542C; flex:none;">+139%</div></div><div style="display:flex; align-items:center; gap:0; margin-top:9px; height:18px; border-radius:999px; overflow:hidden; background:#F3E6DC;"><div style="width:41.9%; height:100%; background:#14796A;"></div></div><div style="display:flex; justify-content:space-between; margin-top:6px; font-size:11.5px; font-weight:700;"><span style="color:#14796A;">€2,09 · ΣΥΝ.ΚΑ</span><span style="color:#E2542C;">€4,99 · Bazaar</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 5 — PRIVATE LABEL ============ -->
+  <section class="pad" style="margin-top:44px;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="font-family:'Nunito',sans-serif; font-weight:900; font-size:13px; color:#fff; background:#2E8C9A; border-radius:8px; padding:4px 10px;">05</span>
+      <span style="font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:#1F6F7C; letter-spacing:.04em;">ΕΠΩΝΥΜΟ ή ΙΔΙΩΤΙΚΗ ΕΤΙΚΕΤΑ;</span>
+    </div>
+    <h2 style="font-family:'Nunito',sans-serif; font-weight:900; font-size:30px; line-height:1.08; margin:10px 0 0; max-width:6.6in;">Με το προϊόν του σούπερ μάρκετ γλιτώνεις <span style="color:#2E8C9A;">έως 75%</span></h2>
+    <p style="font-size:15px; line-height:1.6; color:#454B48; max-width:6.5in; margin:10px 0 0;">Τα προϊόντα ιδιωτικής ετικέτας κοστίζουν σταθερά πολύ λιγότερο ανά μονάδα από τα επώνυμα. Η μεγαλύτερη διαφορά είναι στην κατηγορία <b>Ζελέ, Κερί, Πηλός</b>.</p>
+
+    <figure class="keep" style="margin:18px 0 0; background:#FBF4E6; border:2px solid #DECFB0; border-radius:18px; padding:18px 22px;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px 26px;">
+        <div style="display:flex; align-items:center; gap:10px;"><div style="width:118px; flex:none; font-weight:700; font-size:13px;">Ζελέ, Κερί, Πηλός</div><div style="flex:1; background:#E2EFE9; border-radius:999px; height:20px;"><div style="width:75.0%; height:100%; background:#2E8C9A; border-radius:999px;"></div></div><div style="width:38px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:900; font-size:13px; color:#1F6F7C;">75%</div></div>
+<div style="display:flex; align-items:center; gap:10px;"><div style="width:118px; flex:none; font-weight:700; font-size:13px;">Ροζέ Κρασιά</div><div style="flex:1; background:#E2EFE9; border-radius:999px; height:20px;"><div style="width:74.0%; height:100%; background:#4A9DA9; border-radius:999px;"></div></div><div style="width:38px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:900; font-size:13px; color:#1F6F7C;">74%</div></div>
+<div style="display:flex; align-items:center; gap:10px;"><div style="width:118px; flex:none; font-weight:700; font-size:13px;">Υγρή Τροφή για Σκύλους</div><div style="flex:1; background:#E2EFE9; border-radius:999px; height:20px;"><div style="width:73.0%; height:100%; background:#4A9DA9; border-radius:999px;"></div></div><div style="width:38px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:900; font-size:13px; color:#1F6F7C;">73%</div></div>
+<div style="display:flex; align-items:center; gap:10px;"><div style="width:118px; flex:none; font-weight:700; font-size:13px;">Μπισκότα Γεμιστά, Διάφορες Γεύσεις</div><div style="flex:1; background:#E2EFE9; border-radius:999px; height:20px;"><div style="width:65.0%; height:100%; background:#4A9DA9; border-radius:999px;"></div></div><div style="width:38px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:900; font-size:13px; color:#1F6F7C;">65%</div></div>
+<div style="display:flex; align-items:center; gap:10px;"><div style="width:118px; flex:none; font-weight:700; font-size:13px;">Κόλα</div><div style="flex:1; background:#E2EFE9; border-radius:999px; height:20px;"><div style="width:64.0%; height:100%; background:#6BAFB8; border-radius:999px;"></div></div><div style="width:38px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:900; font-size:13px; color:#1F6F7C;">64%</div></div>
+<div style="display:flex; align-items:center; gap:10px;"><div style="width:118px; flex:none; font-weight:700; font-size:13px;">Ξηρά Τροφή για Γάτες</div><div style="flex:1; background:#E2EFE9; border-radius:999px; height:20px;"><div style="width:64.0%; height:100%; background:#6BAFB8; border-radius:999px;"></div></div><div style="width:38px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:900; font-size:13px; color:#1F6F7C;">64%</div></div>
+<div style="display:flex; align-items:center; gap:10px;"><div style="width:118px; flex:none; font-weight:700; font-size:13px;">Χαλβάς</div><div style="flex:1; background:#E2EFE9; border-radius:999px; height:20px;"><div style="width:63.0%; height:100%; background:#6BAFB8; border-radius:999px;"></div></div><div style="width:38px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:900; font-size:13px; color:#1F6F7C;">63%</div></div>
+<div style="display:flex; align-items:center; gap:10px;"><div style="width:118px; flex:none; font-weight:700; font-size:13px;">Ξηρά Τροφή για Σκύλους</div><div style="flex:1; background:#E2EFE9; border-radius:999px; height:20px;"><div style="width:63.0%; height:100%; background:#8FC2C9; border-radius:999px;"></div></div><div style="width:38px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:900; font-size:13px; color:#1F6F7C;">63%</div></div>
+<div style="display:flex; align-items:center; gap:10px;"><div style="width:118px; flex:none; font-weight:700; font-size:13px;">🌭 Μουστάρδα</div><div style="flex:1; background:#E2EFE9; border-radius:999px; height:20px;"><div style="width:60.0%; height:100%; background:#8FC2C9; border-radius:999px;"></div></div><div style="width:38px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:900; font-size:13px; color:#1F6F7C;">60%</div></div>
+<div style="display:flex; align-items:center; gap:10px;"><div style="width:118px; flex:none; font-weight:700; font-size:13px;">🍚 Μακρύκοκο Ρύζι</div><div style="flex:1; background:#E2EFE9; border-radius:999px; height:20px;"><div style="width:59.0%; height:100%; background:#8FC2C9; border-radius:999px;"></div></div><div style="width:38px; flex:none; text-align:right; font-family:'Nunito',sans-serif; font-weight:900; font-size:13px; color:#1F6F7C;">59%</div></div>
+      </div>
+      <figcaption style="font-size:11.5px; color:#9A9384; margin-top:14px;">Ποσοστό που γλιτώνεις ανά μονάδα (κιλό/λίτρο/τεμάχιο) επιλέγοντας το προϊόν ιδιωτικής ετικέτας αντί για το επώνυμο.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="pad" style="margin-top:46px;">
+    <div style="border-top:2px dashed #C9B894; padding-top:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+      <div style="font-family:'Nunito',sans-serif; font-weight:900; font-size:15px; color:#14796A;">🛒 Παρατηρητήριο Τιμών · Καθημερινή Ανάλυση</div>
+      <div style="font-size:11.5px; color:#9A9384;">Στιγμιότυπο 21 Σεπτεμβρίου 2026</div>
+    </div>
+    <div style="font-size:11.5px; color:#9A9384; line-height:1.85; margin-top:12px;">
+      <b style="color:#7C8077;">Πηγές &amp; μεθοδολογία.</b>
+      Δεδομένα: επίσημο <a href="https://posokanei.gov.gr" style="color:#14796A; font-weight:700;">Παρατηρητήριο Τιμών (posokanei.gov.gr)</a> · <a href="https://github.com/spyrosavl/posokanei/blob/main/data/2026/posokanei-2026-09-21.json" style="color:#14796A; font-weight:700;">δεδομένα στιγμιότυπου</a>.
+      Ανοιχτός κώδικας: <a href="https://github.com/spyrosavl/posokanei/blob/main/stats.py" style="color:#14796A; font-weight:700;">stats.py</a> (υπολογισμοί) ·
+      <a href="https://github.com/spyrosavl/posokanei/blob/main/report.py" style="color:#14796A; font-weight:700;">report.py</a> (αυτή η σελίδα) ·
+      <a href="https://github.com/spyrosavl/posokanei" style="color:#14796A; font-weight:700;">όλο το αποθετήριο &amp; τα ημερήσια στιγμιότυπα στο GitHub</a>.
+      Όλες οι συγκρίσεις είναι ανά μονάδα όπου χρειάζεται και καθαρισμένες από προφανή σφάλματα τιμών.
+    </div>
+  </footer>
 </main>
-<footer id="methodology">
-  <div><a class="brand" href="#">posokanei.</a><p>Ανοιχτά δεδομένα. Καθημερινή εικόνα.</p><p class="note">Ανεξάρτητη ανάλυση δεδομένων του επίσημου Παρατηρητηρίου Τιμών.<br>Στιγμιότυπο 20 Σεπτεμβρίου 2026.</p></div>
-  <div><h2>Πηγές &amp; μεθοδολογία</h2><p>Πηγή: <a href="https://posokanei.gov.gr">posokanei.gov.gr ↗</a> · <a href="https://github.com/spyrosavl/posokanei/blob/main/data/2026/posokanei-2026-09-20.json">Ακριβές στιγμιότυπο ↗</a></p>
-    <p>Οι τιμές είναι αυτές του στιγμιότυπου και μπορεί να διαφέρουν στο κατάστημα. Στις διαφορές ανά προϊόν και κατηγορία αποκλείουμε ελάχιστες τιμές κάτω από €1 και ακραίες τιμές που απέχουν πάνω από 1,5× από τη δεύτερη χαμηλότερη ή υψηλότερη. Τα φίλτρα περιορίζουν πιθανά σφάλματα· δεν εγγυώνται την ακρίβεια της πηγής.</p>
-    <p><a href="https://github.com/spyrosavl/posokanei/blob/main/stats.py">Υπολογισμοί ↗</a> · <a href="https://github.com/spyrosavl/posokanei">Κώδικας &amp; ιστορικό αρχείο ↗</a></p></div>
-</footer>
-</div>
 </body>
 </html>
